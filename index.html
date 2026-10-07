@@ -475,24 +475,69 @@
           background: #c3b9a5;
         }
 
+        .menu-btn,
+        .drawer-close-btn,
+        .mobile-brand {
+          display: none;
+        }
+
         @media (max-width: 900px) {
+          .menu-btn {
+            display: inline-flex !important;
+          }
+          .drawer-close-btn {
+            display: inline-flex !important;
+          }
+          .mobile-brand {
+            display: inline-flex !important;
+          }
           .app-layout {
-            flex-direction: column !important;
-            height: auto !important;
-            max-height: none !important;
-            overflow: visible !important;
+            height: 100vh !important;
+            overflow: hidden !important;
           }
           .app-sidebar {
-            width: 100% !important;
-            flex: none !important;
-            height: auto !important;
-            max-height: 280px !important;
-            border-inline-end: 0 !important;
-            border-bottom: 1px solid #e4ddcf !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            height: 100vh !important;
+            width: 290px !important;
+            max-width: 85vw !important;
+            z-index: 1001 !important;
+            background: #f7f4ee !important;
+            box-shadow: 0 0 32px rgba(0, 0, 0, 0.22) !important;
+            transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1) !important;
           }
-          .app-main {
-            height: auto !important;
-            overflow: visible !important;
+          /* RTL (Arabic) */
+          [dir="rtl"] .app-sidebar {
+            right: 0 !important;
+            left: auto !important;
+          }
+          [dir="rtl"] .app-sidebar.drawer-closed {
+            transform: translateX(105%) !important;
+          }
+          [dir="rtl"] .app-sidebar.drawer-open {
+            transform: translateX(0) !important;
+          }
+          /* LTR (English) */
+          [dir="ltr"] .app-sidebar {
+            left: 0 !important;
+            right: auto !important;
+          }
+          [dir="ltr"] .app-sidebar.drawer-closed {
+            transform: translateX(-105%) !important;
+          }
+          [dir="ltr"] .app-sidebar.drawer-open {
+            transform: translateX(0) !important;
+          }
+
+          .app-header {
+            padding: 12px 16px !important;
+            gap: 10px !important;
+          }
+          .header-search {
+            order: 3 !important;
+            flex: 1 1 100% !important;
+            max-width: 100% !important;
           }
         }
 
@@ -512,13 +557,29 @@
       style="height: 100vh; max-height: 100vh; overflow: hidden; display: flex; font-family: {{fontFamily}}; color: #1f1c17; background: #ffffff; font-size: {{baseSize}}; line-height: {{baseLine}}"
       data-canvas-width="1440" data-canvas-height="1760">
 
+      <!-- Mobile Backdrop Overlay -->
+      <sc-if value="{{menuOpen}}" hint-placeholder-val="{{false}}">
+        <div class="drawer-backdrop" sc-camel-on-click="{{closeMenu}}"
+          style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(2px); z-index: 999; cursor: pointer">
+        </div>
+      </sc-if>
+
       <!-- Sidebar -->
-      <aside class="app-sidebar"
-        style="flex: 0 0 250px; width: 250px; height: 100vh; overflow-y: auto; box-sizing: border-box; background: #f7f4ee; border-inline-end: 1px solid #e4ddcf; padding: 24px 16px; display: flex; flex-direction: column; gap: 24px; position: relative; z-index: 40">
-        <div style="display: flex; align-items: center; gap: 12px; padding: 0 8px">
-          <img src="assets/logo.png" alt="CIRA Education" style="height: 36px; width: auto; display: block">
-          <div style="width: 1px; height: 28px; background: #e4ddcf"></div>
-          <div style="font-size: 18px; line-height: 26px; font-weight: 600">{{t.appName}}</div>
+      <aside class="app-sidebar {{sidebarDrawerClass}}"
+        style="flex: 0 0 265px; width: 265px; height: 100vh; overflow-y: auto; box-sizing: border-box; background: #f7f4ee; border-inline-end: 1px solid #e4ddcf; padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 40">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px">
+          <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex-shrink: 0">
+            <img src="assets/logo.png" alt="CIRA Education" style="height: 28px; width: auto; max-width: 130px; object-fit: contain; display: block; flex-shrink: 0">
+            <div style="width: 1px; height: 22px; background: #e4ddcf; flex-shrink: 0"></div>
+            <div style="font-size: 16px; line-height: 22px; font-weight: 700; color: #703845; white-space: nowrap; flex-shrink: 0">{{t.appName}}</div>
+          </div>
+          <button type="button" class="drawer-close-btn btn2" sc-camel-on-click="{{closeMenu}}" aria-label="{{t.closeAria}}" title="{{t.closeAria}}"
+            style="display: none; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid #e4ddcf; border-radius: 8px; background: #ffffff; color: #5f5a50; cursor: pointer; flex-shrink: 0">
+            <svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
         <nav aria-label="{{t.mainNav}}" style="display: flex; flex-direction: column; gap: 4px">
           <button type="button" class="navlink" sc-camel-on-click="{{navDash.pick}}" aria-current="{{navDash.current}}"
@@ -636,17 +697,8 @@
               <path d="M16 18v4"></path>
             </svg>
             {{t.navSettings}}</button>
-          <button type="button" class="navlink btn-logout" sc-camel-on-click="{{logoutAction}}" title="{{t.logoutTitle}}"
-            style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; cursor: pointer; text-align: start; background: transparent; color: #b42318; font-weight: 500">
-            <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{dashCostArrowStyle}}">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-            {{t.logoutTitle}}</button>
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; border-top: 1px solid #e4ddcf; margin-top: 4px; background: #ffffff; border-radius: 8px; border: 1px solid #e4ddcf">
-            <div style="display: flex; align-items: center; gap: 10px; min-width: 0">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; margin-top: 6px; background: #ffffff; border-radius: 8px; border: 1px solid #e4ddcf">
+            <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1">
               <div
                 style="flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: #f6ecda; color: #7d5a1c; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">
                 {{t.initials}}</div>
@@ -673,9 +725,26 @@
         <!-- Top bar -->
         <header class="app-header"
           style="position: sticky; top: 0; z-index: 50; background: #ffffff; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid #e4ddcf; box-shadow: 0 1px 3px rgba(0,0,0,0.03)">
+          
+          <!-- Mobile Hamburger Menu Button -->
+          <button type="button" class="btn2 menu-btn" sc-camel-on-click="{{toggleMenu}}" aria-label="{{t.menuAria}}" title="{{t.menuAria}}"
+            style="display: none; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; cursor: pointer; flex-shrink: 0">
+            <svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+
+          <!-- Mobile Brand Logo & Title -->
+          <div class="mobile-brand" style="display: none; align-items: center; gap: 8px">
+            <img src="assets/logo.png" alt="CIRA Education" style="height: 28px; width: auto; max-width: 120px; object-fit: contain; display: block">
+            <div style="font-size: 16px; font-weight: 700; color: #703845">{{t.appName}}</div>
+          </div>
+
           <label for="q"
             style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{t.searchLabel}}</label>
-          <div
+          <div class="header-search"
             style="flex: 1 1 280px; max-width: 520px; display: flex; align-items: center; gap: 8px; height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff">
             <svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="#5f5a50" stroke-width="1.75"
               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -730,15 +799,6 @@
               <path d="M12 5v14"></path>
             </svg>
             {{t.addAsset}}</button>
-          <button type="button" class="btn2 btn-logout" sc-camel-on-click="{{logoutAction}}" title="{{t.logoutTitle}}" aria-label="{{t.logoutTitle}}"
-            style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid #fecdd3; border-radius: 8px; background: #fff5f5; color: #b42318; font-size: 13px; font-weight: 600; cursor: pointer">
-            <svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{dashCostArrowStyle}}">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-            <span>{{t.logoutTitle}}</span>
-          </button>
         </header>
 
         <div
@@ -1309,7 +1369,7 @@
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { scope: 'all', status: 'all', lang: null, view: null, period: 'm', costOrg: 'ALL' };
+    this.state = { scope: 'all', status: 'all', lang: null, view: null, period: 'm', costOrg: 'ALL', menuOpen: false };
   }
   renderVals() {
     const self = this;
@@ -1339,6 +1399,8 @@ class Component extends DCLogic {
       userName: (authUser && authUser.name) ? authUser.name : L('Nour Adel', 'نور عادل'),
       userRole: (authUser && authUser.role) ? authUser.role : L('Facility manager', 'مدير المنشأة'),
       logoutTitle: L('Sign out', 'تسجيل الخروج'),
+      menuAria: L('Toggle navigation menu', 'فتح أو إغلاق القائمة'),
+      closeAria: L('Close navigation menu', 'إغلاق القائمة'),
       searchLabel: L('Search assets', 'البحث في الأصول'),
       searchPh: L('Search by tag, serial, room or custodian', 'ابحث برقم الأصل أو الرقم التسلسلي أو الغرفة أو المسؤول'),
       switchLabel: L('العربية', 'English'),
@@ -1645,7 +1707,7 @@ class Component extends DCLogic {
         weight: on ? '600' : '400',
         icon: on ? '#703845' : '#5f5a50',
         shadow: on ? (ar ? 'inset -3px 0 0 #703845' : 'inset 3px 0 0 #703845') : 'none',
-        pick: () => self.setState({ view: id })
+        pick: () => self.setState({ view: id, menuOpen: false })
       };
     };
 
@@ -1746,6 +1808,10 @@ class Component extends DCLogic {
 
     return {
       t, lang,
+      menuOpen: !!this.state.menuOpen,
+      sidebarDrawerClass: this.state.menuOpen ? 'drawer-open' : 'drawer-closed',
+      toggleMenu: () => self.setState({ menuOpen: !self.state.menuOpen }),
+      closeMenu: () => self.setState({ menuOpen: false }),
       dir: ar ? 'rtl' : 'ltr',
       fontFamily: ar ? arabic : latin,
       switchFont: ar ? latin : arabic,
@@ -1782,9 +1848,9 @@ class Component extends DCLogic {
       isAudits: view === 'audits',
       isReports: view === 'reports',
       isSettings: view === 'settings',
-      goScan: () => self.setState({ view: 'scan' }),
-      goAdd: () => self.setState({ view: 'assets' }),
-      goCosts: () => self.setState({ view: 'costs' }),
+      goScan: () => self.setState({ view: 'scan', menuOpen: false }),
+      goAdd: () => self.setState({ view: 'assets', menuOpen: false }),
+      goCosts: () => self.setState({ view: 'costs', menuOpen: false }),
       dashCostCards,
       dashSectors,
       dashMaintInsightText,
