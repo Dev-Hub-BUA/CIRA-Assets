@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CIRA Assets — Scan</title>
+<script src="./auth-guard.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div lang="{{lang}}" dir="{{dir}}" style="font-family: {{ff}}; color: #1f1c17; background: #ffffff; font-size: {{fs}}; line-height: {{lh}}; display: flex; flex-direction: column; gap: 24px">
+
+<section style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 600">{{t.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{t.subtitle}}</p>
+</div>
+<div role="group" aria-label="{{t.modeAria}}" style="display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 8px; background: #f7f4ee; border: 1px solid #e4ddcf">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{m.pressed}}" onClick="{{m.pick}}" style="height: 36px; min-width: 44px; padding: 0 14px; border-radius: 6px; border: 0; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; background: {{m.bg}}; color: {{m.fg}}; box-shadow: {{m.shadow}}">{{m.label}}</button>
+</sc-for>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<!-- Scanner -->
+<section style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="position: relative; height: 340px; border-radius: 12px; background: #1f1c17; overflow: hidden; display: flex; align-items: center; justify-content: center">
+<div style="position: relative; width: 220px; height: 140px">
+<div style="position: absolute; top: 0; left: 0; width: 32px; height: 32px; border-top: 3px solid #ce9f51; border-left: 3px solid #ce9f51; border-radius: 6px 0 0 0"></div>
+<div style="position: absolute; top: 0; right: 0; width: 32px; height: 32px; border-top: 3px solid #ce9f51; border-right: 3px solid #ce9f51; border-radius: 0 6px 0 0"></div>
+<div style="position: absolute; bottom: 0; left: 0; width: 32px; height: 32px; border-bottom: 3px solid #ce9f51; border-left: 3px solid #ce9f51; border-radius: 0 0 0 6px"></div>
+<div style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-bottom: 3px solid #ce9f51; border-right: 3px solid #ce9f51; border-radius: 0 0 6px 0"></div>
+<div style="position: absolute; left: 12px; right: 12px; top: 69px; height: 2px; background: #ce9f51"></div>
+</div>
+<p style="position: absolute; bottom: 16px; left: 16px; right: 16px; margin: 0; text-align: center; color: #f3eee4; font-size: 13px; line-height: 20px">{{t.aim}}</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="sc-tag" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.manual}}</label>
+<div style="display: flex; gap: 8px">
+<input id="sc-tag" dir="ltr" onInput="{{onTag}}" value="{{typed}}" placeholder="BUC-IT-004821" style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-size: 15px">
+<button type="button" onClick="{{find}}" style="height: 44px; padding: 0 18px; border: 0; border-radius: 8px; background: #703845; color: #ffffff; font-weight: 500; cursor: pointer; font-family: inherit">{{t.find}}</button>
+</div>
+<sc-if value="{{notFound}}" hint-placeholder-val="{{false}}">
+<p role="alert" style="margin: 0; font-size: 13px; line-height: 20px; color: #b42318">{{t.notFound}}</p>
+</sc-if>
+</div>
+<sc-if value="{{isAudit}}" hint-placeholder-val="{{false}}">
+<div style="border: 1px solid #e4ddcf; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; gap: 12px; font-size: 13px; line-height: 20px">
+<span style="font-weight: 600">{{t.auditRoom}}</span>
+<span style="font-variant-numeric: tabular-nums; color: #5f5a50">{{t.auditProgress}}</span>
+</div>
+<div style="height: 8px; border-radius: 4px; background: #f7f4ee; overflow: hidden"><div style="width: 75%; height: 100%; border-radius: 4px; background: #ce9f51"></div></div>
+</div>
+</sc-if>
+</section>
+
+<!-- Result -->
+<section style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+<sc-if value="{{hasAsset}}" hint-placeholder-val="{{true}}">
+<div style="border: 1px solid #e4ddcf; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.result}}</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span dir="ltr" style="align-self: flex-start; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-size: 13px; font-weight: 500; color: #5f5a50">{{a.tag}}</span>
+<h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600">{{a.name}}</h2>
+<span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 600; background: {{a.bg}}; color: {{a.fg}}"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{a.fg}}"></span>{{a.status}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="padding: 12px; border-radius: 8px; background: #f7f4ee; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.expected}}</span>
+<span style="font-size: 13px; line-height: 20px; font-weight: 500">{{a.expected}}</span>
+</div>
+<div style="padding: 12px; border-radius: 8px; background: #f7f4ee; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.here}}</span>
+<span style="font-size: 13px; line-height: 20px; font-weight: 500">{{a.here}}</span>
+</div>
+</div>
+<sc-if value="{{a.mismatch}}" hint-placeholder-val="{{false}}">
+<p style="margin: 0; padding: 12px; border-radius: 8px; background: #f6ecda; font-size: 13px; line-height: 20px; color: #1f1c17">{{t.mismatch}}</p>
+</sc-if>
+<sc-if value="{{confirmed}}" hint-placeholder-val="{{false}}">
+<p role="status" style="margin: 0; padding: 12px; border-radius: 8px; background: #e2f1e9; font-size: 13px; line-height: 20px; color: #1d6b45; font-weight: 500">{{t.confirmedMsg}}</p>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" onClick="{{confirm}}" style="flex: 1 1 auto; height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: #703845; color: #ffffff; font-weight: 500; cursor: pointer; font-family: inherit">{{a.primary}}</button>
+<button type="button" class="btn2" style="flex: 1 1 auto; height: 44px; padding: 0 16px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-weight: 500; cursor: pointer; font-family: inherit">{{t.details}}</button>
+<button type="button" style="flex: 1 1 auto; height: 44px; padding: 0 16px; border: 1px solid #b42318; border-radius: 8px; background: #ffffff; color: #b42318; font-weight: 500; cursor: pointer; font-family: inherit">{{t.issue}}</button>
+</div>
+</div>
+</sc-if>
+
+<div style="border: 1px solid #e4ddcf; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.session}}</h2>
+<span style="font-size: 13px; color: #5f5a50; font-variant-numeric: tabular-nums">{{t.sessionSummary}}</span>
+</div>
+<ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+<sc-for list="{{recent}}" as="r" hint-placeholder-count="5">
+<li style="display: flex; align-items: center; gap: 12px; min-height: 44px; border-top: 1px solid #e4ddcf; font-size: 13px; line-height: 20px">
+<span dir="ltr" style="flex: none; width: 140px; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-weight: 500; white-space: nowrap">{{r.tag}}</span>
+<span style="flex: 1; min-width: 0">{{r.name}}</span>
+<span style="flex: none; font-weight: 600; color: {{r.color}}">{{r.result}}</span>
+<span style="flex: none; width: 48px; text-align: end; color: #5f5a50; font-variant-numeric: tabular-nums">{{r.time}}</span>
+</li>
+</sc-for>
+</ul>
+</div>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":1216,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { mode: 'audit', typed: 'BUC-AV-000977', tag: 'BUC-AV-000977', notFound: false, confirmed: false };
+  }
+  renderVals() {
+    const self = this;
+    const ar = (this.props.lang || 'en') === 'ar';
+    const L = (en, a) => (ar ? a : en);
+    const ST = [
+      { label: L('In service', 'في الخدمة'), fg: '#1d6b45', bg: '#e2f1e9' },
+      { label: L('Assigned', 'مُسلَّم'), fg: '#1f5fa8', bg: '#e3edf8' },
+      { label: L('Under maintenance', 'تحت الصيانة'), fg: '#9a4a00', bg: '#fbebdb' },
+      { label: L('Missing', 'مفقود'), fg: '#b42318', bg: '#fbe5e3' },
+      { label: L('Retired', 'مُستبعَد'), fg: '#5f5a50', bg: '#eeebe5' }
+    ];
+    const HERE = L('BUC · Room 1.08', 'BUC · غرفة 1.08');
+    const DB = {
+      'BUC-AV-000977': { name: L('Interactive display, 86 in', 'شاشة تفاعلية 86 بوصة'), st: 0, expected: HERE },
+      'BUC-IT-004821': { name: L('Epson EB-L630U projector', 'جهاز عرض Epson EB-L630U'), st: 3, expected: L('BUC · Lecture Hall 3.12', 'BUC · قاعة المحاضرات 3.12') },
+      'BUC-LAB-001102': { name: L('Olympus CX23 microscope', 'مجهر Olympus CX23'), st: 0, expected: L('BUC · Biology Lab 2', 'BUC · معمل الأحياء 2') }
+    };
+    const rec = DB[this.state.tag];
+    const mismatch = rec ? rec.expected !== HERE : false;
+    const mode = this.state.mode;
+    const a = rec ? {
+      tag: this.state.tag, name: rec.name, status: ST[rec.st].label, fg: ST[rec.st].fg, bg: ST[rec.st].bg,
+      expected: rec.expected, here: HERE, mismatch,
+      primary: mismatch ? L('Move to this room', 'نقل إلى هذه الغرفة') : (mode === 'audit' ? L('Mark as found', 'تسجيل كموجود') : L('Confirm location', 'تأكيد الموقع'))
+    } : { };
+    const modes = [['lookup', L('Look up', 'استعلام')], ['audit', L('Audit room', 'جرد غرفة')], ['move', L('Move', 'نقل')]].map(([id, label]) => {
+      const on = mode === id;
+      return { label, pressed: on ? 'true' : 'false', bg: on ? '#ffffff' : 'transparent', fg: on ? '#703845' : '#5f5a50', shadow: on ? '0 0 0 1px #e4ddcf' : 'none', pick: () => self.setState({ mode: id }) };
+    });
+    const R = (tag, name, kind, time) => ({ tag, name, time,
+      result: [L('Matched', 'مطابق'), L('Wrong room', 'غرفة خاطئة'), L('Not registered', 'غير مسجَّل')][kind],
+      color: ['#1f1c17', '#7d5a1c', '#b42318'][kind] });
+    const recent = [
+      R('BUC-AV-000977', L('Interactive display, 86 in', 'شاشة تفاعلية 86 بوصة'), 0, '14:35'),
+      R('BUC-FUR-007310', L('Student desk', 'مكتب طالب'), 0, '14:34'),
+      R('BUC-LAB-001102', L('Olympus CX23 microscope', 'مجهر Olympus CX23'), 1, '14:33'),
+      R('BUC-IT-005512', L('Ceiling speaker', 'سماعة سقف'), 0, '14:31'),
+      R('BUC-FUR-007302', L('Student desk', 'مكتب طالب'), 2, '14:30')
+    ];
+    return {
+      lang: ar ? 'ar' : 'en', dir: ar ? 'rtl' : 'ltr',
+      ff: ar ? '"IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif' : '"IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif',
+      fs: ar ? '16px' : '15px', lh: ar ? '26px' : '22px', lsp: ar ? '0' : '0.04em',
+      t: {
+        title: L('Scan', 'المسح'),
+        subtitle: L('Scan an asset label or type its tag', 'امسح ملصق الأصل أو اكتب رقمه'),
+        modeAria: L('Scan mode', 'وضع المسح'),
+        aim: L('Point the camera at the barcode on the asset label', 'وجّه الكاميرا إلى الباركود على ملصق الأصل'),
+        manual: L('ENTER TAG MANUALLY', 'إدخال رقم الأصل يدويًا'),
+        find: L('Find', 'بحث'),
+        notFound: L('No asset with this tag. Check the label or register it as new.', 'لا يوجد أصل بهذا الرقم. تحقّق من الملصق أو سجّله كأصل جديد.'),
+        auditRoom: L('Auditing BUC · Room 1.08', 'جرد BUC · غرفة 1.08'),
+        auditProgress: L('18 of 24 expected assets scanned', 'تم مسح 18 من 24 أصلًا متوقعًا'),
+        result: L('SCAN RESULT', 'نتيجة المسح'),
+        expected: L('EXPECTED LOCATION', 'الموقع المسجّل'),
+        here: L('YOU ARE IN', 'أنت في'),
+        mismatch: L('This asset is registered to another room. Move it here, or return it to its registered room.', 'هذا الأصل مسجّل في غرفة أخرى. انقله إلى هنا أو أعده إلى غرفته المسجّلة.'),
+        confirmedMsg: L('Saved at 14:36. The asset record is updated.', 'تم الحفظ في 14:36. تم تحديث سجل الأصل.'),
+        details: L('Open details', 'فتح التفاصيل'),
+        issue: L('Report issue', 'الإبلاغ عن مشكلة'),
+        session: L('This session', 'هذه الجلسة'),
+        sessionSummary: L('18 scanned · 16 matched · 1 wrong room · 1 not registered', '18 ممسوحًا · 16 مطابقًا · 1 غرفة خاطئة · 1 غير مسجَّل')
+      },
+      modes, isAudit: mode === 'audit',
+      typed: this.state.typed,
+      onTag: (e) => self.setState({ typed: e.target.value }),
+      find: () => {
+        const v = (self.state.typed || '').trim().toUpperCase();
+        self.setState({ tag: v, notFound: !DB[v], confirmed: false });
+      },
+      notFound: this.state.notFound,
+      hasAsset: !!rec, a,
+      confirmed: this.state.confirmed,
+      confirm: () => self.setState({ confirmed: true }),
+      recent
+    };
+  }
+}
+</script>
+</body>
+</html>

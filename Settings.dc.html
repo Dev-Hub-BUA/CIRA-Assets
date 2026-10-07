@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CIRA Assets — Settings</title>
+<script src="./auth-guard.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div lang="{{lang}}" dir="{{dir}}" style="font-family: {{ff}}; color: #1f1c17; background: #ffffff; font-size: {{fs}}; line-height: {{lh}}; display: flex; flex-direction: column; gap: 24px">
+
+<section style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 600">{{t.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{t.subtitle}}</p>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<nav aria-label="{{t.sections}}" style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="4">
+<button type="button" onClick="{{tb.pick}}" aria-current="{{tb.current}}" style="min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; text-align: start; cursor: pointer; font-family: inherit; font-size: 15px; background: {{tb.bg}}; color: {{tb.fg}}; font-weight: {{tb.weight}}; box-shadow: {{tb.shadow}}">{{tb.label}}</button>
+</sc-for>
+</nav>
+
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+
+<!-- Organization -->
+<sc-if value="{{isOrg}}" hint-placeholder-val="{{true}}">
+<section style="border: 1px solid #e4ddcf; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 20px">
+<h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.orgTitle}}</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="st-name" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.orgName}}</label>
+<input id="st-name" value="{{t.orgNameVal}}" style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: inherit; font-size: 15px; color: #1f1c17; background: #ffffff">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="st-lang" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.defLang}}</label>
+<select id="st-lang" style="height: 44px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: inherit; font-size: 15px; color: #1f1c17; background: #ffffff"><option>English</option><option>العربية</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="st-cur" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.currency}}</label>
+<select id="st-cur" style="height: 44px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: inherit; font-size: 15px; color: #1f1c17; background: #ffffff"><option>{{t.egp}}</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="st-fy" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.fiscal}}</label>
+<select id="st-fy" style="height: 44px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: inherit; font-size: 15px; color: #1f1c17; background: #ffffff"><option>{{t.jan}}</option><option>{{t.jul}}</option></select>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.logo}}</span>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 16px; border-radius: 8px; background: #f7f4ee">
+<img src="assets/logo.png" alt="CIRA Education" style="height: 40px; width: auto">
+<span style="font-size: 13px; line-height: 20px; color: #5f5a50">{{t.logoHint}}</span>
+</div>
+</div>
+<div style="display: flex; gap: 8px">
+<button type="button" onClick="{{save}}" style="height: 44px; padding: 0 20px; border: 0; border-radius: 8px; background: #703845; color: #ffffff; font-weight: 500; cursor: pointer; font-family: inherit">{{t.save}}</button>
+<sc-if value="{{saved}}" hint-placeholder-val="{{false}}"><span role="status" style="align-self: center; font-size: 13px; color: #1d6b45; font-weight: 600">{{t.savedMsg}}</span></sc-if>
+</div>
+</section>
+</sc-if>
+
+<!-- Categories -->
+<sc-if value="{{isCat}}" hint-placeholder-val="{{false}}">
+<section style="border: 1px solid #e4ddcf; border-radius: 12px; overflow: hidden">
+<div style="padding: 24px 24px 16px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.catTitle}}</h2>
+<div style="padding: 16px; border-radius: 8px; background: #f7f4ee; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.tagFormat}}</span>
+<span dir="ltr" style="align-self: flex-start; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-size: 15px; font-weight: 500">&lt;FACILITY&gt;-&lt;CATEGORY&gt;-&lt;6 digits&gt; · BUC-IT-004821</span>
+</div>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 600px">
+<div style="display: grid; grid-template-columns: minmax(200px, 2fr) 120px 160px 140px; background: #f7f4ee; border-top: 1px solid #e4ddcf; border-bottom: 1px solid #e4ddcf; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">
+<div style="padding: 12px 16px">{{t.colCat}}</div>
+<div style="padding: 12px 16px">{{t.colCode}}</div>
+<div style="padding: 12px 16px">{{t.colLife}}</div>
+<div style="padding: 12px 16px; text-align: end">{{t.colCount}}</div>
+</div>
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: minmax(200px, 2fr) 120px 160px 140px; align-items: center; min-height: 52px; border-bottom: 1px solid #e4ddcf; font-size: 13px; line-height: 20px">
+<div style="padding: 12px 16px; font-weight: 500">{{c.name}}</div>
+<div dir="ltr" style="padding: 12px 16px; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-weight: 500; text-align: start">{{c.code}}</div>
+<div style="padding: 12px 16px">{{c.life}}</div>
+<div style="padding: 12px 16px; text-align: end; font-variant-numeric: tabular-nums">{{c.n}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+</sc-if>
+
+<!-- Users -->
+<sc-if value="{{isUsers}}" hint-placeholder-val="{{false}}">
+<section style="border: 1px solid #e4ddcf; border-radius: 12px; overflow: hidden">
+<div style="padding: 24px 24px 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.usersTitle}}</h2>
+<button type="button" class="btn2" style="height: 40px; padding: 0 14px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit">{{t.invite}}</button>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 640px">
+<div style="display: grid; grid-template-columns: minmax(200px, 2fr) minmax(160px, 1.5fr) minmax(180px, 2fr) 110px; background: #f7f4ee; border-top: 1px solid #e4ddcf; border-bottom: 1px solid #e4ddcf; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">
+<div style="padding: 12px 16px">{{t.colName}}</div>
+<div style="padding: 12px 16px">{{t.colRole}}</div>
+<div style="padding: 12px 16px">{{t.colScope}}</div>
+<div style="padding: 12px 16px"></div>
+</div>
+<sc-for list="{{users}}" as="u" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: minmax(200px, 2fr) minmax(160px, 1.5fr) minmax(180px, 2fr) 110px; align-items: center; min-height: 56px; border-bottom: 1px solid #e4ddcf; font-size: 13px; line-height: 20px">
+<div style="padding: 8px 16px; display: flex; align-items: center; gap: 10px">
+<span style="flex: none; width: 32px; height: 32px; border-radius: 50%; background: #f6ecda; color: #7d5a1c; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">{{u.ini}}</span>
+<span style="font-weight: 500">{{u.name}}</span>
+</div>
+<div style="padding: 12px 16px">{{u.role}}</div>
+<div style="padding: 12px 16px; color: #5f5a50">{{u.scope}}</div>
+<div style="padding: 12px 16px"><a href="#" style="font-weight: 500">{{t.edit}}</a></div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+</sc-if>
+
+<!-- Notifications -->
+<sc-if value="{{isNotif}}" hint-placeholder-val="{{false}}">
+<section style="border: 1px solid #e4ddcf; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0 0 8px; font-size: 18px; line-height: 26px; font-weight: 600">{{t.notifTitle}}</h2>
+<sc-for list="{{notifs}}" as="n" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 16px; padding: 12px 0; border-top: 1px solid #e4ddcf">
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<span style="font-size: 15px; font-weight: 500">{{n.label}}</span>
+<span style="font-size: 13px; line-height: 20px; color: #5f5a50">{{n.hint}}</span>
+</span>
+<button type="button" role="switch" aria-checked="{{n.checked}}" aria-label="{{n.label}}" onClick="{{n.toggle}}" style="flex: none; position: relative; width: 48px; height: 28px; border-radius: 14px; border: 1px solid {{n.bd}}; background: {{n.bg}}; cursor: pointer; padding: 0">
+<span style="position: absolute; top: 3px; inset-inline-start: {{n.knob}}; width: 20px; height: 20px; border-radius: 50%; background: {{n.knobBg}}"></span>
+</button>
+</div>
+</sc-for>
+</section>
+</sc-if>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":1216,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'org', saved: false, on: { missing: true, maint: true, due: true, cost: false, weekly: true } };
+  }
+  renderVals() {
+    const self = this;
+    const ar = (this.props.lang || 'en') === 'ar';
+    const L = (en, a) => (ar ? a : en);
+    const tab = this.state.tab;
+    const tabs = [['org', L('Organization', 'المؤسسة')], ['cat', L('Categories and tags', 'الفئات والأرقام')], ['users', L('Users and roles', 'المستخدمون والأدوار')], ['notif', L('Notifications', 'الإشعارات')]].map(([id, label]) => {
+      const on = tab === id;
+      return { label, current: on ? 'page' : 'false', bg: on ? '#f5e9ec' : 'transparent', fg: on ? '#703845' : '#1f1c17', weight: on ? '600' : '400', shadow: on ? (ar ? 'inset -3px 0 0 #703845' : 'inset 3px 0 0 #703845') : 'none', pick: () => self.setState({ tab: id }) };
+    });
+    const C = (name, code, life, n) => ({ name, code, life, n });
+    const yrs = (n) => n + L(' years', ' سنوات');
+    const U = (ini, name, role, scope) => ({ ini, name, role, scope });
+    const N = [
+      ['missing', L('Asset reported missing', 'الإبلاغ عن فقد أصل'), L('Email and in-app, immediately', 'بالبريد وداخل التطبيق فورًا')],
+      ['maint', L('Work order overdue', 'تأخر أمر عمل'), L('When a work order passes its due date', 'عند تجاوز أمر العمل موعده')],
+      ['due', L('Assignment due back', 'موعد إرجاع تسليم'), L('2 days before the due date', 'قبل الموعد بيومين')],
+      ['cost', L('Utility cost jump', 'ارتفاع تكلفة المرافق'), L('When a cost rises more than 15% month on month', 'عند ارتفاع التكلفة أكثر من 15% عن الشهر السابق')],
+      ['weekly', L('Weekly summary', 'ملخّص أسبوعي'), L('Every Sunday at 08:00', 'كل أحد الساعة 08:00')]
+    ];
+    const notifs = N.map(([id, label, hint]) => {
+      const on = !!self.state.on[id];
+      return { label, hint, checked: on ? 'true' : 'false', bg: on ? '#703845' : '#ffffff', bd: on ? '#703845' : '#8f8676', knob: on ? '23px' : '3px', knobBg: on ? '#ffffff' : '#8f8676',
+        toggle: () => { const n = Object.assign({}, self.state.on); n[id] = !on; self.setState({ on: n }); } };
+    });
+    return {
+      lang: ar ? 'ar' : 'en', dir: ar ? 'rtl' : 'ltr',
+      ff: ar ? '"IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif' : '"IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif',
+      fs: ar ? '16px' : '15px', lh: ar ? '26px' : '22px', lsp: ar ? '0' : '0.04em',
+      t: {
+        title: L('Settings', 'الإعدادات'),
+        subtitle: L('Organization details, asset categories, people and alerts', 'بيانات المؤسسة وفئات الأصول والمستخدمون والتنبيهات'),
+        sections: L('Settings sections', 'أقسام الإعدادات'),
+        orgTitle: L('Organization', 'المؤسسة'),
+        orgName: L('ORGANIZATION NAME', 'اسم المؤسسة'), orgNameVal: L('CIRA Education', 'سيرا للتعليم'),
+        defLang: L('DEFAULT LANGUAGE', 'اللغة الافتراضية'),
+        currency: L('CURRENCY', 'العملة'), egp: L('Egyptian pound (EGP)', 'الجنيه المصري (ج.م)'),
+        fiscal: L('FISCAL YEAR STARTS', 'بداية السنة المالية'), jan: L('January', 'يناير'), jul: L('July', 'يوليو'),
+        logo: L('LOGO', 'الشعار'), logoHint: L('Used on reports and printed asset labels', 'يُستخدم في التقارير وملصقات الأصول المطبوعة'),
+        save: L('Save changes', 'حفظ التغييرات'), savedMsg: L('Saved', 'تم الحفظ'),
+        catTitle: L('Categories and tag format', 'الفئات وصيغة رقم الأصل'),
+        tagFormat: L('TAG FORMAT', 'صيغة رقم الأصل'),
+        colCat: L('CATEGORY', 'الفئة'), colCode: L('CODE', 'الرمز'), colLife: L('USEFUL LIFE', 'العمر الافتراضي'), colCount: L('ASSETS', 'الأصول'),
+        usersTitle: L('Users and roles', 'المستخدمون والأدوار'), invite: L('Invite user', 'دعوة مستخدم'),
+        colName: L('NAME', 'الاسم'), colRole: L('ROLE', 'الدور'), colScope: L('FACILITIES', 'المنشآت'), edit: L('Edit', 'تعديل'),
+        notifTitle: L('Notifications', 'الإشعارات')
+      },
+      tabs,
+      isOrg: tab === 'org', isCat: tab === 'cat', isUsers: tab === 'users', isNotif: tab === 'notif',
+      saved: this.state.saved, save: () => self.setState({ saved: true }),
+      cats: [
+        C(L('IT equipment', 'أجهزة تقنية المعلومات'), 'IT', yrs(4), '4,210'),
+        C(L('Furniture', 'الأثاث'), 'FUR', yrs(10), '5,640'),
+        C(L('Lab equipment', 'معدات المعامل'), 'LAB', yrs(8), '1,580'),
+        C(L('Audio-visual', 'الأجهزة السمعية والبصرية'), 'AV', yrs(5), '964'),
+        C(L('Vehicles', 'المركبات'), 'VEH', yrs(8), '86')
+      ],
+      users: [
+        U(L('NA', 'ن ع'), L('Nour Adel', 'نور عادل'), L('Facility manager', 'مدير المنشأة'), L('All facilities', 'كل المنشآت')),
+        U(L('KS', 'ك س'), L('Karim Sami', 'كريم سامي'), L('Auditor', 'مدقق جرد'), 'BUC'),
+        U(L('HM', 'ه م'), L('Heba Mostafa', 'هبة مصطفى'), L('Auditor', 'مدقق جرد'), 'BUA'),
+        U(L('TA', 'ط ع'), L('Tarek Aly', 'طارق علي'), L('IT staff', 'فريق تقنية المعلومات'), 'SEU'),
+        U(L('FT', 'ف م'), L('Finance team', 'فريق المالية'), L('Viewer, costs and reports', 'مشاهد، التكاليف والتقارير'), L('All facilities', 'كل المنشآت'))
+      ],
+      notifs
+    };
+  }
+}
+</script>
+</body>
+</html>

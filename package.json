@@ -1,0 +1,12 @@
+{
+  "name": "cira-assets-dashboard",
+  "version": "1.0.0",
+  "description": "CIRA Assets Dashboard - Complete UI Shell & Subpages",
+  "scripts": {
+    "start": "npx serve .",
+    "serve": "npx serve ."
+  },
+  "keywords": ["cira", "assets", "dashboard"],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CIRA Assets — Reports</title>
+<script src="./auth-guard.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div lang="{{lang}}" dir="{{dir}}" style="font-family: {{ff}}; color: #1f1c17; background: #ffffff; font-size: {{fs}}; line-height: {{lh}}; display: flex; flex-direction: column; gap: 24px">
+
+<section style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 600">{{t.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{t.subtitle}}</p>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<!-- Library -->
+<section aria-label="{{t.library}}" style="flex: 999 1 560px; min-width: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px">
+<sc-for list="{{reports}}" as="r" hint-placeholder-count="6">
+<button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="text-align: start; font-family: inherit; color: #1f1c17; cursor: pointer; border: 1px solid {{r.bd}}; background: {{r.bg}}; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px; min-height: 150px; box-shadow: {{r.ring}}">
+<span style="width: 36px; height: 36px; border-radius: 8px; background: #f7f4ee; display: flex; align-items: center; justify-content: center; color: #703845">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>
+</span>
+<span style="font-size: 18px; line-height: 26px; font-weight: 600">{{r.name}}</span>
+<span style="font-size: 13px; line-height: 20px; color: #5f5a50">{{r.desc}}</span>
+</button>
+</sc-for>
+</section>
+
+<!-- Builder -->
+<section aria-labelledby="rb-h" style="flex: 1 1 320px; min-width: 0; border: 1px solid #e4ddcf; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.builder}}</span>
+<h2 id="rb-h" style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{sel}}</h2>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="rb-fac" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.facility}}</label>
+<select id="rb-fac" style="height: 44px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: inherit; font-size: 15px; color: #1f1c17; background: #ffffff">
+<sc-for list="{{facOpts}}" as="o" hint-placeholder-count="5"><option>{{o}}</option></sc-for>
+</select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="rb-per" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.period}}</label>
+<select id="rb-per" style="height: 44px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: inherit; font-size: 15px; color: #1f1c17; background: #ffffff">
+<sc-for list="{{perOpts}}" as="o" hint-placeholder-count="4"><option>{{o}}</option></sc-for>
+</select>
+</div>
+<fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px">
+<legend style="padding: 0; margin-bottom: 6px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.format}}</legend>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{formats}}" as="f" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}" style="height: 40px; min-width: 64px; padding: 0 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; border: 1px solid {{f.bd}}; background: {{f.bg}}; color: {{f.fg}}">{{f.label}}</button>
+</sc-for>
+</div>
+</fieldset>
+<label style="display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 13px; line-height: 20px; cursor: pointer">
+<input type="checkbox" style="width: 20px; height: 20px; accent-color: #703845">{{t.schedule}}</label>
+<button type="button" onClick="{{generate}}" style="height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: #703845; color: #ffffff; font-weight: 500; cursor: pointer; font-family: inherit">{{t.generate}}</button>
+<sc-if value="{{generated}}" hint-placeholder-val="{{false}}">
+<p role="status" style="margin: 0; padding: 12px; border-radius: 8px; background: #f6ecda; font-size: 13px; line-height: 20px">{{t.ready}}</p>
+</sc-if>
+</section>
+</div>
+
+<!-- Scheduled + recent -->
+<section style="border: 1px solid #e4ddcf; border-radius: 12px; overflow: hidden">
+<div style="padding: 20px 24px 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.recent}}</h2>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 760px">
+<div style="display: grid; grid-template-columns: minmax(220px, 2fr) minmax(160px, 1.5fr) 150px 110px 150px 120px; background: #f7f4ee; border-top: 1px solid #e4ddcf; border-bottom: 1px solid #e4ddcf; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">
+<div style="padding: 12px 16px">{{t.colReport}}</div>
+<div style="padding: 12px 16px">{{t.colScope}}</div>
+<div style="padding: 12px 16px">{{t.colBy}}</div>
+<div style="padding: 12px 16px">{{t.colFormat}}</div>
+<div style="padding: 12px 16px">{{t.colWhen}}</div>
+<div style="padding: 12px 16px"></div>
+</div>
+<sc-for list="{{recent}}" as="x" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: minmax(220px, 2fr) minmax(160px, 1.5fr) 150px 110px 150px 120px; align-items: center; min-height: 52px; border-bottom: 1px solid #e4ddcf; font-size: 13px; line-height: 20px">
+<div style="padding: 12px 16px; font-weight: 500">{{x.name}}</div>
+<div style="padding: 12px 16px; color: #5f5a50">{{x.scope}}</div>
+<div style="padding: 12px 16px">{{x.by}}</div>
+<div style="padding: 12px 16px"><span style="height: 22px; padding: 0 8px; border-radius: 4px; background: #eeebe5; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center">{{x.fmt}}</span></div>
+<div style="padding: 12px 16px; color: #5f5a50; font-variant-numeric: tabular-nums">{{x.when}}</div>
+<div style="padding: 12px 16px"><a href="#" style="font-weight: 500">{{t.download}}</a></div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":1216,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { rep: 'register', fmt: 'xlsx', generated: false };
+  }
+  renderVals() {
+    const self = this;
+    const ar = (this.props.lang || 'en') === 'ar';
+    const L = (en, a) => (ar ? a : en);
+    const REP = [
+      ['register', L('Asset register', 'سجل الأصول'), L('Every asset with tag, location, custodian and status.', 'كل الأصول مع الرقم والموقع والمسؤول والحالة.')],
+      ['depreciation', L('Depreciation', 'الإهلاك'), L('Book value by category and purchase year.', 'القيمة الدفترية حسب الفئة وسنة الشراء.')],
+      ['missing', L('Missing and written off', 'المفقودات والمشطوبات'), L('Assets not found in audits, with last known location.', 'الأصول غير الموجودة في الجرد مع آخر موقع معروف.')],
+      ['costs', L('Operating costs', 'تكاليف التشغيل'), L('Electricity, water, gas, telecom & internet, and service costs by organization.', 'تكاليف الكهرباء والمياه والغاز والإنترنت والاتصالات والخدمات حسب المنشأة.')],
+      ['maintenance', L('Maintenance spend', 'إنفاق الصيانة'), L('Work orders, repair time and cost by vendor.', 'أوامر العمل ومدة الإصلاح والتكلفة حسب المورد.')],
+      ['audit', L('Audit results', 'نتائج الجرد'), L('Found rate and discrepancies per facility and room.', 'نسبة العثور والفروقات لكل منشأة وغرفة.')]
+    ];
+    const cur = REP.find((r) => r[0] === self.state.rep) || REP[0];
+    const reports = REP.map(([id, name, desc]) => {
+      const on = id === cur[0];
+      return { name, desc, pressed: on ? 'true' : 'false', bd: on ? '#703845' : '#e4ddcf', bg: on ? '#f5e9ec' : '#ffffff', ring: on ? '0 0 0 1px #703845' : 'none', pick: () => self.setState({ rep: id, generated: false }) };
+    });
+    const formats = [['pdf', 'PDF'], ['xlsx', 'Excel'], ['csv', 'CSV']].map(([id, label]) => {
+      const on = self.state.fmt === id;
+      return { label, pressed: on ? 'true' : 'false', bd: on ? '#703845' : '#8f8676', bg: on ? '#f5e9ec' : '#ffffff', fg: on ? '#703845' : '#1f1c17', pick: () => self.setState({ fmt: id }) };
+    });
+    const X = (name, scope, by, fmt, when) => ({ name, scope, by, fmt, when });
+    return {
+      lang: ar ? 'ar' : 'en', dir: ar ? 'rtl' : 'ltr',
+      ff: ar ? '"IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif' : '"IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif',
+      fs: ar ? '16px' : '15px', lh: ar ? '26px' : '22px', lsp: ar ? '0' : '0.04em',
+      t: {
+        title: L('Reports', 'التقارير'),
+        subtitle: L('Pick a report, set its scope and export it', 'اختر تقريرًا وحدّد نطاقه ثم صدّره'),
+        library: L('Report library', 'مكتبة التقارير'),
+        builder: L('SELECTED REPORT', 'التقرير المختار'),
+        facility: L('FACILITY', 'المنشأة'), period: L('PERIOD', 'الفترة'), format: L('FORMAT', 'الصيغة'),
+        schedule: L('Email this report every month', 'إرسال هذا التقرير بالبريد شهريًا'),
+        generate: L('Generate report', 'إنشاء التقرير'),
+        ready: L('Your report is ready. It is also listed under Recent exports.', 'التقرير جاهز، وتجده أيضًا في قائمة أحدث الصادرات.'),
+        recent: L('Recent exports', 'أحدث الصادرات'),
+        colReport: L('REPORT', 'التقرير'), colScope: L('SCOPE', 'النطاق'), colBy: L('CREATED BY', 'أنشأه'), colFormat: L('FORMAT', 'الصيغة'), colWhen: L('CREATED', 'تاريخ الإنشاء'),
+        download: L('Download', 'تنزيل')
+      },
+      reports, formats, sel: cur[1],
+      generated: this.state.generated,
+      generate: () => self.setState({ generated: true }),
+      facOpts: [L('All facilities', 'كل المنشآت'), 'BUC', 'BUA', 'SEU', L('Futures Nasr City', 'فيوتشرز مدينة نصر')],
+      perOpts: [L('Sep 2026', 'سبتمبر 2026'), L('Q3 2026', 'الربع الثالث 2026'), L('Jan–Sep 2026', 'يناير–سبتمبر 2026'), L('Custom range', 'فترة مخصصة')],
+      recent: [
+        X(L('Operating costs', 'تكاليف التشغيل'), L('All facilities · Sep 2026', 'كل المنشآت · سبتمبر 2026'), L('Nour Adel', 'نور عادل'), 'Excel', L('06 Oct 2026, 11:02', '06 أكتوبر 2026، 11:02')),
+        X(L('Missing and written off', 'المفقودات والمشطوبات'), L('BUC · Q3 2026', 'BUC · الربع الثالث 2026'), L('Karim Sami', 'كريم سامي'), 'PDF', L('05 Oct 2026, 16:40', '05 أكتوبر 2026، 16:40')),
+        X(L('Asset register', 'سجل الأصول'), L('SEU · all assets', 'SEU · كل الأصول'), L('Tarek Aly', 'طارق علي'), 'CSV', L('04 Oct 2026, 09:15', '04 أكتوبر 2026، 09:15')),
+        X(L('Maintenance spend', 'إنفاق الصيانة'), L('All facilities · Q3 2026', 'كل المنشآت · الربع الثالث 2026'), L('Monthly schedule', 'جدولة شهرية'), 'PDF', L('01 Oct 2026, 07:00', '01 أكتوبر 2026، 07:00')),
+        X(L('Depreciation', 'الإهلاك'), L('All facilities · 2025', 'كل المنشآت · 2025'), L('Finance team', 'فريق المالية'), 'Excel', L('28 Sep 2026, 14:22', '28 سبتمبر 2026، 14:22'))
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

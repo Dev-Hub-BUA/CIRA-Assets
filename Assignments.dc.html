@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CIRA Assets — Assignments</title>
+<script src="./auth-guard.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div lang="{{lang}}" dir="{{dir}}" style="font-family: {{ff}}; color: #1f1c17; background: #ffffff; font-size: {{fs}}; line-height: {{lh}}; display: flex; flex-direction: column; gap: 24px">
+
+<section style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 600">{{t.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{t.subtitle}}</p>
+</section>
+
+<section aria-label="{{t.summary}}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+<div style="border: 1px solid #e4ddcf; border-radius: 12px; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{s.k}}</span>
+<span style="font-size: 28px; line-height: 32px; font-weight: 600; font-variant-numeric: tabular-nums">{{s.v}}</span>
+</div>
+</sc-for>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<section style="flex: 999 1 600px; min-width: 0; border: 1px solid #e4ddcf; border-radius: 12px; overflow: hidden">
+<div role="tablist" aria-label="{{t.tabsAria}}" style="display: flex; flex-wrap: wrap; gap: 4px; padding: 0 16px; border-bottom: 1px solid #e4ddcf">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="4">
+<button type="button" role="tab" aria-selected="{{tb.sel}}" onClick="{{tb.pick}}" style="height: 48px; padding: 0 12px; border: 0; background: transparent; cursor: pointer; font-size: 15px; font-family: inherit; font-weight: {{tb.weight}}; color: {{tb.fg}}; box-shadow: {{tb.shadow}}">{{tb.label}} <span style="font-size: 13px; color: #5f5a50; font-variant-numeric: tabular-nums">{{tb.count}}</span></button>
+</sc-for>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 860px">
+<div style="display: grid; grid-template-columns: 160px minmax(180px, 2fr) minmax(150px, 1.5fr) minmax(130px, 1fr) 120px 130px 120px; background: #f7f4ee; border-bottom: 1px solid #e4ddcf; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">
+<div style="padding: 12px 16px">{{t.colTag}}</div>
+<div style="padding: 12px 16px">{{t.colAsset}}</div>
+<div style="padding: 12px 16px">{{t.colCustodian}}</div>
+<div style="padding: 12px 16px">{{t.colDept}}</div>
+<div style="padding: 12px 16px">{{t.colSince}}</div>
+<div style="padding: 12px 16px">{{t.colDue}}</div>
+<div style="padding: 12px 16px"></div>
+</div>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 160px minmax(180px, 2fr) minmax(150px, 1.5fr) minmax(130px, 1fr) 120px 130px 120px; align-items: center; min-height: 56px; border-bottom: 1px solid #e4ddcf; font-size: 13px; line-height: 20px">
+<div dir="ltr" style="padding: 12px 16px; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-weight: 500; white-space: nowrap; text-align: start">{{r.tag}}</div>
+<div style="padding: 12px 16px; font-weight: 500">{{r.asset}}</div>
+<div style="padding: 12px 16px; display: flex; align-items: center; gap: 8px">
+<span style="flex: none; width: 28px; height: 28px; border-radius: 50%; background: #f6ecda; color: #7d5a1c; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600">{{r.ini}}</span>{{r.who}}</div>
+<div style="padding: 12px 16px; color: #5f5a50">{{r.dept}}</div>
+<div style="padding: 12px 16px; font-variant-numeric: tabular-nums">{{r.since}}</div>
+<div style="padding: 12px 16px; font-variant-numeric: tabular-nums; color: {{r.dueColor}}; font-weight: {{r.dueWeight}}">{{r.due}}</div>
+<div style="padding: 6px 12px"><sc-if value="{{r.canReturn}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{r.ret}}" class="btn2" style="height: 40px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit">{{t.checkIn}}</button></sc-if></div>
+</div>
+</sc-for>
+<sc-if value="{{noRows}}" hint-placeholder-val="{{false}}">
+<div style="padding: 48px 24px; text-align: center; color: #5f5a50">{{t.empty}}</div>
+</sc-if>
+</div>
+</div>
+</section>
+
+<!-- New assignment form -->
+<section aria-labelledby="na-h" style="flex: 1 1 320px; min-width: 0; border: 1px solid #e4ddcf; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<h2 id="na-h" style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.newTitle}}</h2>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="na-tag" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.fTag}}</label>
+<input id="na-tag" dir="ltr" placeholder="BUC-IT-000000" style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-size: 15px; color: #1f1c17; background: #ffffff">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="na-who" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.fWho}}</label>
+<input id="na-who" placeholder="{{t.fWhoPh}}" style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: inherit; font-size: 15px; color: #1f1c17; background: #ffffff">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="na-dept" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.fDept}}</label>
+<select id="na-dept" style="height: 44px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: inherit; font-size: 15px; color: #1f1c17; background: #ffffff">
+<sc-for list="{{depts}}" as="d" hint-placeholder-count="4"><option>{{d}}</option></sc-for>
+</select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="na-due" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.fDue}}</label>
+<input id="na-due" type="date" style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; font-family: inherit; font-size: 15px; color: #1f1c17; background: #ffffff">
+<span style="font-size: 13px; line-height: 20px; color: #5f5a50">{{t.fDueHint}}</span>
+</div>
+<label style="display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 13px; line-height: 20px; cursor: pointer">
+<input type="checkbox" checked="checked" style="width: 20px; height: 20px; accent-color: #703845">{{t.fSign}}</label>
+<button type="button" style="height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: #703845; color: #ffffff; font-weight: 500; cursor: pointer; font-family: inherit">{{t.assign}}</button>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":1216,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'active', returned: {} };
+  }
+  renderVals() {
+    const self = this;
+    const ar = (this.props.lang || 'en') === 'ar';
+    const L = (en, a) => (ar ? a : en);
+    const D = (d, m) => d + ' ' + (ar ? ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'] : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[m - 1] + ' 2026';
+    // kind: 0 on time, 1 due this week, 2 overdue
+    const A = [
+      { tag: 'BUA-IT-011207', asset: L('Dell Latitude 5450 laptop', 'حاسوب محمول Dell Latitude 5450'), who: L('Dr. Mona Saleh', 'د. منى صالح'), ini: L('MS', 'م ص'), dept: L('Pharmacy', 'الصيدلة'), since: D('02', 9), due: D('31', 12), kind: 0 },
+      { tag: 'BUA-VEH-000014', asset: L('Bus, 28 seats', 'حافلة 28 مقعدًا'), who: L('Ahmed Fathy', 'أحمد فتحي'), ini: L('AF', 'أ ف'), dept: L('Transport', 'النقل'), since: D('01', 9), due: L('No end date', 'بدون تاريخ انتهاء'), kind: 0 },
+      { tag: 'BUA-AV-000311', asset: L('Wireless microphone set', 'طقم ميكروفونات لاسلكية'), who: L('Events team', 'فريق الفعاليات'), ini: L('ET', 'ف ف'), dept: L('Student affairs', 'شؤون الطلاب'), since: D('28', 9), due: D('09', 10), kind: 1 },
+      { tag: 'BUC-IT-006230', asset: L('iPad 10th gen', 'جهاز iPad الجيل العاشر'), who: L('Omar Khaled', 'عمر خالد'), ini: L('OK', 'ع خ'), dept: L('Engineering', 'الهندسة'), since: D('15', 9), due: D('08', 10), kind: 1 },
+      { tag: 'FNC-IT-000912', asset: L('Canon EOS R50 camera', 'كاميرا Canon EOS R50'), who: L('Salma Ibrahim', 'سلمى إبراهيم'), ini: L('SI', 'س إ'), dept: L('Media club', 'نادي الإعلام'), since: D('10', 9), due: D('24', 9), kind: 2 },
+      { tag: 'SEU-IT-004118', asset: L('Lenovo ThinkPad E14', 'Lenovo ThinkPad E14'), who: L('Youssef Nabil', 'يوسف نبيل'), ini: L('YN', 'ي ن'), dept: L('IT', 'تقنية المعلومات'), since: D('01', 8), due: D('30', 9), kind: 2 },
+      { tag: 'BUC-LAB-001240', asset: L('Portable spectrometer', 'مطياف محمول'), who: L('Dr. Hany Fouad', 'د. هاني فؤاد'), ini: L('HF', 'ه ف'), dept: L('Biology', 'الأحياء'), since: D('20', 9), due: D('20', 11), kind: 0 }
+    ];
+    const ret = this.state.returned;
+    const inTab = (a) => {
+      const done = !!ret[a.tag];
+      if (self.state.tab === 'returned') return done;
+      if (done) return false;
+      if (self.state.tab === 'week') return a.kind === 1;
+      if (self.state.tab === 'overdue') return a.kind === 2;
+      return true;
+    };
+    const live = A.filter((a) => !ret[a.tag]);
+    const TABS = [
+      ['active', L('Active', 'نشطة'), live.length],
+      ['week', L('Due this week', 'مستحقة هذا الأسبوع'), live.filter((a) => a.kind === 1).length],
+      ['overdue', L('Overdue', 'متأخرة'), live.filter((a) => a.kind === 2).length],
+      ['returned', L('Returned', 'مُعادة'), Object.keys(ret).length]
+    ];
+    const tabs = TABS.map(([id, label, count]) => {
+      const on = self.state.tab === id;
+      return { label, count, sel: on ? 'true' : 'false', weight: on ? '600' : '400', fg: on ? '#703845' : '#5f5a50', shadow: on ? 'inset 0 -2px 0 #703845' : 'none', pick: () => self.setState({ tab: id }) };
+    });
+    const rows = A.filter(inTab).map((a) => ({
+      tag: a.tag, asset: a.asset, who: a.who, ini: a.ini, dept: a.dept, since: a.since,
+      due: ret[a.tag] ? L('Returned 06 Oct', 'أُعيد 06 أكتوبر') : (a.kind === 2 ? a.due + L(' · overdue', ' · متأخر') : a.due),
+      dueColor: !ret[a.tag] && a.kind === 2 ? '#b42318' : '#1f1c17',
+      dueWeight: !ret[a.tag] && a.kind === 2 ? '600' : '400',
+      canReturn: !ret[a.tag],
+      ret: () => { const n = Object.assign({}, self.state.returned); n[a.tag] = true; self.setState({ returned: n }); }
+    }));
+    return {
+      lang: ar ? 'ar' : 'en', dir: ar ? 'rtl' : 'ltr',
+      ff: ar ? '"IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif' : '"IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif',
+      fs: ar ? '16px' : '15px', lh: ar ? '26px' : '22px', lsp: ar ? '0' : '0.04em',
+      t: {
+        title: L('Assignments', 'التسليمات'),
+        subtitle: L('Equipment checked out to staff, students and teams', 'المعدات المسلّمة إلى الموظفين والطلاب والفرق'),
+        summary: L('Summary', 'ملخّص'), tabsAria: L('Assignment views', 'عروض التسليمات'),
+        colTag: L('TAG', 'رقم الأصل'), colAsset: L('ASSET', 'الأصل'), colCustodian: L('CUSTODIAN', 'المسؤول'),
+        colDept: L('DEPARTMENT', 'القسم'), colSince: L('SINCE', 'منذ'), colDue: L('DUE BACK', 'موعد الإرجاع'),
+        checkIn: L('Check in', 'استلام'),
+        empty: L('Nothing here.', 'لا يوجد شيء هنا.'),
+        newTitle: L('New assignment', 'تسليم جديد'),
+        fTag: L('ASSET TAG', 'رقم الأصل'), fWho: L('CUSTODIAN', 'المسؤول'), fWhoPh: L('Name or staff ID', 'الاسم أو الرقم الوظيفي'),
+        fDept: L('DEPARTMENT', 'القسم'), fDue: L('DUE BACK', 'موعد الإرجاع'),
+        fDueHint: L('Leave empty for permanent assignment', 'اتركه فارغًا للتسليم الدائم'),
+        fSign: L('Ask the custodian to sign on handover', 'طلب توقيع المسؤول عند التسليم'),
+        assign: L('Assign asset', 'تسليم الأصل')
+      },
+      stats: [
+        { k: L('ASSIGNED NOW', 'مُسلَّم حاليًا'), v: '2,106' },
+        { k: L('DUE THIS WEEK', 'مستحق هذا الأسبوع'), v: '38' },
+        { k: L('OVERDUE', 'متأخر'), v: '12' }
+      ],
+      tabs, rows, noRows: rows.length === 0,
+      depts: [L('Facilities', 'المرافق'), L('IT', 'تقنية المعلومات'), L('Pharmacy', 'الصيدلة'), L('Engineering', 'الهندسة'), L('Student affairs', 'شؤون الطلاب')]
+    };
+  }
+}
+</script>
+</body>
+</html>

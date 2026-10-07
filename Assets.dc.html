@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CIRA Assets — Asset register</title>
+<script src="./auth-guard.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div lang="{{lang}}" dir="{{dir}}" style="font-family: {{ff}}; color: #1f1c17; background: #ffffff; font-size: {{fs}}; line-height: {{lh}}; display: flex; flex-direction: column; gap: 24px">
+
+<section style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 600">{{t.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{t.subtitle}}</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" class="btn2" style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-weight: 500; cursor: pointer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5"></path><path d="M12 3v12"></path></svg>
+{{t.import}}</button>
+<button type="button" class="btn2" style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-weight: 500; cursor: pointer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+{{t.printLabels}}</button>
+</div>
+</section>
+
+<!-- Filters -->
+<section aria-label="{{t.filters}}" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; padding: 16px; border-radius: 12px; background: #f7f4ee; border: 1px solid #e4ddcf">
+<div style="flex: 2 1 260px; display: flex; flex-direction: column; gap: 6px">
+<label for="as-q" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.search}}</label>
+<input id="as-q" type="search" onInput="{{onSearch}}" placeholder="{{t.searchPh}}" style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 15px; font-family: inherit">
+</div>
+<div style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 6px">
+<label for="as-fac" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.facility}}</label>
+<select id="as-fac" onChange="{{onFac}}" style="height: 44px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 15px; font-family: inherit">
+<sc-for list="{{facOpts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+</select>
+</div>
+<div style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 6px">
+<label for="as-cat" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.category}}</label>
+<select id="as-cat" onChange="{{onCat}}" style="height: 44px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 15px; font-family: inherit">
+<sc-for list="{{catOpts}}" as="o" hint-placeholder-count="6"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+</select>
+</div>
+<div style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 6px">
+<label for="as-st" style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.status}}</label>
+<select id="as-st" onChange="{{onSt}}" style="height: 44px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 15px; font-family: inherit">
+<sc-for list="{{stOpts}}" as="o" hint-placeholder-count="6"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+</select>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<!-- Register table -->
+<section style="flex: 999 1 600px; min-width: 0; border: 1px solid #e4ddcf; border-radius: 12px; background: #ffffff; overflow: hidden">
+<div style="overflow-x: auto">
+<div style="min-width: 900px">
+<div style="display: grid; grid-template-columns: 160px minmax(200px, 2fr) 130px minmax(190px, 2fr) 160px 140px; background: #f7f4ee; border-bottom: 1px solid #e4ddcf; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">
+<div style="padding: 12px 16px">{{t.colTag}}</div>
+<div style="padding: 12px 16px">{{t.colAsset}}</div>
+<div style="padding: 12px 16px">{{t.colCategory}}</div>
+<div style="padding: 12px 16px">{{t.colLocation}}</div>
+<div style="padding: 12px 16px">{{t.colStatus}}</div>
+<div style="padding: 12px 16px">{{t.colAudited}}</div>
+</div>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="10">
+<div style="display: grid; grid-template-columns: 160px minmax(200px, 2fr) 130px minmax(190px, 2fr) 160px 140px; align-items: center; min-height: 52px; border-bottom: 1px solid #e4ddcf; font-size: 13px; line-height: 20px; background: {{r.rowBg}}">
+<div style="padding: 12px 16px; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-weight: 500; white-space: nowrap; unicode-bidi: isolate" dir="ltr">{{r.tag}}</div>
+<div style="padding: 4px 8px"><button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="min-height: 44px; width: 100%; padding: 0 8px; border: 0; background: transparent; cursor: pointer; text-align: start; font-size: 13px; font-weight: 600; color: #703845; font-family: inherit">{{r.name}}</button></div>
+<div style="padding: 12px 16px; color: #5f5a50">{{r.cat}}</div>
+<div style="padding: 12px 16px">{{r.loc}}</div>
+<div style="padding: 12px 16px"><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; background: {{r.bg}}; color: {{r.fg}}"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{r.fg}}"></span>{{r.status}}</span></div>
+<div style="padding: 12px 16px; color: #5f5a50; font-variant-numeric: tabular-nums">{{r.audited}}</div>
+</div>
+</sc-for>
+<sc-if value="{{noRows}}" hint-placeholder-val="{{false}}">
+<div style="padding: 48px 24px; text-align: center; color: #5f5a50">{{t.empty}}</div>
+</sc-if>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; font-size: 13px; color: #5f5a50">
+<span>{{showing}}</span>
+<div style="display: flex; gap: 8px">
+<button type="button" disabled="disabled" style="height: 40px; padding: 0 14px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 13px; opacity: 0.45; font-family: inherit">{{t.prev}}</button>
+<button type="button" class="btn2" style="height: 40px; padding: 0 14px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 13px; cursor: pointer; font-family: inherit">{{t.next}}</button>
+</div>
+</div>
+</section>
+
+<!-- Detail panel -->
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{true}}">
+<aside aria-label="{{t.detail}}" style="flex: 1 1 340px; min-width: 0; border: 1px solid #e4ddcf; border-radius: 12px; background: #ffffff; padding: 24px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span dir="ltr" style="align-self: flex-start; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-size: 13px; font-weight: 500; color: #5f5a50; white-space: nowrap">{{sel.tag}}</span>
+<h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600">{{sel.name}}</h2>
+<span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 600; background: {{sel.bg}}; color: {{sel.fg}}"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{sel.fg}}"></span>{{sel.status}}</span>
+</div>
+<button type="button" onClick="{{close}}" aria-label="{{t.close}}" class="btn2" style="flex: none; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; cursor: pointer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+</div>
+<div style="height: 160px; border-radius: 8px; background: #f7f4ee; border: 1px dashed #8f8676; display: flex; align-items: center; justify-content: center; color: #5f5a50; font-size: 13px">{{t.photo}}</div>
+<dl style="margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{sel.fields}}" as="f" hint-placeholder-count="8">
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<dt style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{f.k}}</dt>
+<dd style="margin: 0; font-size: 13px; line-height: 20px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere">{{f.v}}</dd>
+</div>
+</sc-for>
+</dl>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" style="flex: 1 1 auto; height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: #703845; color: #ffffff; font-weight: 500; cursor: pointer; font-family: inherit">{{t.assign}}</button>
+<button type="button" class="btn2" style="flex: 1 1 auto; height: 44px; padding: 0 16px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-weight: 500; cursor: pointer; font-family: inherit">{{t.move}}</button>
+<button type="button" style="flex: 1 1 auto; height: 44px; padding: 0 16px; border: 1px solid #b42318; border-radius: 8px; background: #ffffff; color: #b42318; font-weight: 500; cursor: pointer; font-family: inherit">{{t.reportMissing}}</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<h3 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.history}}</h3>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column">
+<sc-for list="{{sel.history}}" as="h" hint-placeholder-count="3">
+<li style="display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid #e4ddcf">
+<span style="flex: none; width: 8px; height: 8px; margin-top: 7px; border-radius: 50%; background: #ce9f51"></span>
+<span style="display: flex; flex-direction: column">
+<span style="font-size: 13px; line-height: 20px; font-weight: 500">{{h.what}}</span>
+<span style="font-size: 13px; line-height: 20px; color: #5f5a50">{{h.when}}</span>
+</span>
+</li>
+</sc-for>
+</ol>
+</div>
+</aside>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":1216,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { q: '', fac: 'all', cat: 'all', st: 'all', sel: 'BUC-IT-004821' };
+  }
+  renderVals() {
+    const self = this;
+    const ar = (this.props.lang || 'en') === 'ar';
+    const L = (en, a) => (ar ? a : en);
+    const ST = [
+      { label: L('In service', 'في الخدمة'), fg: '#1d6b45', bg: '#e2f1e9' },
+      { label: L('Assigned', 'مُسلَّم'), fg: '#1f5fa8', bg: '#e3edf8' },
+      { label: L('Under maintenance', 'تحت الصيانة'), fg: '#9a4a00', bg: '#fbebdb' },
+      { label: L('Missing', 'مفقود'), fg: '#b42318', bg: '#fbe5e3' },
+      { label: L('Retired', 'مُستبعَد'), fg: '#5f5a50', bg: '#eeebe5' }
+    ];
+    const CAT = { IT: L('IT', 'تقنية المعلومات'), FUR: L('Furniture', 'الأثاث'), LAB: L('Lab', 'المعامل'), AV: L('Audio-visual', 'سمعي وبصري'), VEH: L('Vehicles', 'المركبات') };
+    const FAC = { BUC: 'BUC', BUA: 'BUA', SEU: 'SEU', FNC: L('Futures Nasr City', 'فيوتشرز مدينة نصر') };
+    const M = (d, m, y) => d + ' ' + (ar ? ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'] : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[m - 1] + ' ' + y;
+    const A = [
+      { tag: 'BUC-IT-004821', fac: 'BUC', cat: 'IT', st: 3, name: L('Epson EB-L630U projector', 'جهاز عرض Epson EB-L630U'), room: L('Lecture Hall 3.12', 'قاعة المحاضرات 3.12'), cust: '', serial: 'X5HK2101448', bought: M('12', 2, 2023), cost: 68500, warr: M('12', 2, 2026), sup: 'Raya IT', aud: M('28', 9, 2026) },
+      { tag: 'BUA-IT-011207', fac: 'BUA', cat: 'IT', st: 1, name: L('Dell Latitude 5450 laptop', 'حاسوب محمول Dell Latitude 5450'), room: L('Pharmacy, Room 2.04', 'الصيدلة، غرفة 2.04'), cust: L('Dr. Mona Saleh', 'د. منى صالح'), serial: 'CN-0J4K7Q', bought: M('20', 10, 2024), cost: 54200, warr: M('20', 10, 2026), sup: 'Dell Egypt', aud: M('14', 9, 2026) },
+      { tag: 'FNC-LAB-000412', fac: 'FNC', cat: 'LAB', st: 2, name: L('Fume hood, 1.5 m', 'خزانة أبخرة، 1.5 م'), room: L('Science Lab B', 'معمل العلوم B'), cust: L('Facilities', 'المرافق'), serial: 'FH15-22-0931', bought: M('03', 8, 2022), cost: 186000, warr: M('03', 8, 2025), sup: 'LabTech Egypt', aud: M('10', 9, 2026) },
+      { tag: 'SEU-FUR-002318', fac: 'SEU', cat: 'FUR', st: 0, name: L('Lecture chair, tablet arm', 'كرسي محاضرات بذراع كتابة'), room: L('Hall A', 'القاعة A'), cust: '', serial: '—', bought: M('15', 6, 2021), cost: 2900, warr: '—', sup: 'Kabbani Furniture', aud: M('22', 9, 2026) },
+      { tag: 'BUC-AV-000977', fac: 'BUC', cat: 'AV', st: 0, name: L('Interactive display, 86 in', 'شاشة تفاعلية 86 بوصة'), room: L('Room 1.08', 'غرفة 1.08'), cust: '', serial: 'IFP86-77810', bought: M('05', 1, 2025), cost: 142000, warr: M('05', 1, 2028), sup: 'Raya IT', aud: M('28', 9, 2026) },
+      { tag: 'FNC-FUR-000193', fac: 'FNC', cat: 'FUR', st: 4, name: L('Teacher desk', 'مكتب معلم'), room: L('Room 2.11', 'غرفة 2.11'), cust: '', serial: '—', bought: M('01', 9, 2016), cost: 4100, warr: '—', sup: 'Kabbani Furniture', aud: M('10', 9, 2026) },
+      { tag: 'BUA-VEH-000014', fac: 'BUA', cat: 'VEH', st: 1, name: L('Bus, 28 seats', 'حافلة 28 مقعدًا'), room: L('Transport yard', 'ساحة النقل'), cust: L('Ahmed Fathy', 'أحمد فتحي'), serial: 'MB-28-4471', bought: M('18', 4, 2020), cost: 1350000, warr: M('18', 4, 2023), sup: 'MCV', aud: M('01', 9, 2026) },
+      { tag: 'SEU-IT-003560', fac: 'SEU', cat: 'IT', st: 2, name: L('Cisco Catalyst 9200 switch', 'محوّل شبكة Cisco Catalyst 9200'), room: L('Server room', 'غرفة الخوادم'), cust: L('IT', 'تقنية المعلومات'), serial: 'FOC2419X0LM', bought: M('09', 3, 2023), cost: 96000, warr: M('09', 3, 2028), sup: 'Cisco partner', aud: M('22', 9, 2026) },
+      { tag: 'BUC-LAB-001102', fac: 'BUC', cat: 'LAB', st: 0, name: L('Olympus CX23 microscope', 'مجهر Olympus CX23'), room: L('Biology Lab 2', 'معمل الأحياء 2'), cust: '', serial: '3K21455', bought: M('27', 11, 2022), cost: 38500, warr: M('27', 11, 2025), sup: 'LabTech Egypt', aud: M('28', 9, 2026) },
+      { tag: 'FNC-IT-000877', fac: 'FNC', cat: 'IT', st: 0, name: L('HP LaserJet M404 printer', 'طابعة HP LaserJet M404'), room: L('Staff room', 'غرفة المعلمين'), cust: '', serial: 'PHBQK41022', bought: M('14', 2, 2024), cost: 17800, warr: M('14', 2, 2026), sup: 'Raya IT', aud: M('10', 9, 2026) },
+      { tag: 'BUA-AV-000311', fac: 'BUA', cat: 'AV', st: 1, name: L('Wireless microphone set', 'طقم ميكروفونات لاسلكية'), room: L('Auditorium', 'المسرح'), cust: L('Events team', 'فريق الفعاليات'), serial: 'SLXD24-0812', bought: M('30', 8, 2024), cost: 46000, warr: M('30', 8, 2026), sup: 'Sound Masters', aud: M('14', 9, 2026) },
+      { tag: 'SEU-FUR-000954', fac: 'SEU', cat: 'FUR', st: 0, name: L('Library shelving unit', 'وحدة أرفف مكتبة'), room: L('Library', 'المكتبة'), cust: '', serial: '—', bought: M('11', 7, 2021), cost: 8600, warr: '—', sup: 'Kabbani Furniture', aud: M('22', 9, 2026) }
+    ];
+    const q = this.state.q.trim().toLowerCase();
+    const list = A.filter((a) =>
+      (this.state.fac === 'all' || a.fac === this.state.fac) &&
+      (this.state.cat === 'all' || a.cat === this.state.cat) &&
+      (this.state.st === 'all' || String(a.st) === this.state.st) &&
+      (!q || (a.tag + ' ' + a.name + ' ' + a.room + ' ' + a.cust).toLowerCase().indexOf(q) >= 0));
+    const loc = (a) => FAC[a.fac] + ' · ' + a.room;
+    const rows = list.map((a) => {
+      const on = self.state.sel === a.tag;
+      return { tag: a.tag, name: a.name, cat: CAT[a.cat], loc: loc(a), status: ST[a.st].label, fg: ST[a.st].fg, bg: ST[a.st].bg, audited: a.aud, rowBg: on ? '#f5e9ec' : '#ffffff', pressed: on ? 'true' : 'false', pick: () => self.setState({ sel: a.tag }) };
+    });
+    const s = A.find((a) => a.tag === self.state.sel);
+    const lastEvent = (a) => [
+      L('Location confirmed by scan', 'تم تأكيد الموقع بالمسح'),
+      L('Assigned to ', 'سُلِّم إلى ') + a.cust,
+      L('Sent for maintenance', 'أُرسل للصيانة'),
+      L('Reported missing by the audit team', 'أبلغ فريق الجرد عن فقده'),
+      L('Retired: end of useful life', 'استُبعد: انتهاء العمر الافتراضي')
+    ][a.st];
+    const sel = s ? {
+      tag: s.tag, name: s.name, status: ST[s.st].label, fg: ST[s.st].fg, bg: ST[s.st].bg,
+      fields: [
+        { k: L('CATEGORY', 'الفئة'), v: CAT[s.cat] },
+        { k: L('LOCATION', 'الموقع'), v: loc(s) },
+        { k: L('CUSTODIAN', 'المسؤول'), v: s.cust || '—' },
+        { k: L('SERIAL', 'الرقم التسلسلي'), v: s.serial },
+        { k: L('PURCHASED', 'تاريخ الشراء'), v: s.bought },
+        { k: L('COST', 'التكلفة'), v: L('EGP ', 'ج.م ') + s.cost.toLocaleString('en-US') },
+        { k: L('WARRANTY UNTIL', 'الضمان حتى'), v: s.warr },
+        { k: L('SUPPLIER', 'المورد'), v: s.sup }
+      ],
+      history: [
+        { what: lastEvent(s), when: s.aud },
+        { what: L('Audited in ', 'جُرد في ') + s.room, when: s.aud },
+        { what: L('Registered by Facilities', 'سجّلته إدارة المرافق'), when: s.bought }
+      ]
+    } : null;
+
+    const opt = (v, label, cur) => ({ v, label });
+    const facOpts = [opt('all', L('All facilities', 'كل المنشآت'))].concat(Object.keys(FAC).map((k) => opt(k, FAC[k])));
+    const catOpts = [opt('all', L('All categories', 'كل الفئات'))].concat(Object.keys(CAT).map((k) => opt(k, CAT[k])));
+    const stOpts = [opt('all', L('All statuses', 'كل الحالات'))].concat(ST.map((x, i) => opt(String(i), x.label)));
+
+    return {
+      lang: ar ? 'ar' : 'en', dir: ar ? 'rtl' : 'ltr',
+      ff: ar ? '"IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif' : '"IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif',
+      fs: ar ? '16px' : '15px', lh: ar ? '26px' : '22px', lsp: ar ? '0' : '0.04em',
+      t: {
+        title: L('Assets', 'الأصول'),
+        subtitle: L('12,480 assets across 45 sites · sample of the register', '12,480 أصلًا في 45 موقعًا · عيّنة من السجل'),
+        import: L('Import CSV', 'استيراد CSV'),
+        printLabels: L('Print labels', 'طباعة الملصقات'),
+        filters: L('Filters', 'عوامل التصفية'),
+        search: L('SEARCH', 'بحث'),
+        searchPh: L('Tag, name, room or custodian', 'رقم الأصل أو الاسم أو الغرفة أو المسؤول'),
+        facility: L('FACILITY', 'المنشأة'),
+        category: L('CATEGORY', 'الفئة'),
+        status: L('STATUS', 'الحالة'),
+        colTag: L('TAG', 'رقم الأصل'), colAsset: L('ASSET', 'الأصل'), colCategory: L('CATEGORY', 'الفئة'),
+        colLocation: L('LOCATION', 'الموقع'), colStatus: L('STATUS', 'الحالة'), colAudited: L('LAST AUDITED', 'آخر جرد'),
+        empty: L('No assets match these filters.', 'لا توجد أصول تطابق عوامل التصفية.'),
+        prev: L('Previous', 'السابق'), next: L('Next', 'التالي'),
+        detail: L('Asset details', 'تفاصيل الأصل'), close: L('Close details', 'إغلاق التفاصيل'),
+        photo: L('[Asset photo]', '[صورة الأصل]'),
+        assign: L('Assign', 'تسليم'), move: L('Move', 'نقل'), reportMissing: L('Report missing', 'الإبلاغ عن فقد'),
+        history: L('History', 'السجل')
+      },
+      rows, noRows: rows.length === 0,
+      showing: L('Showing ' + rows.length + ' of 12,480', 'عرض ' + rows.length + ' من 12,480'),
+      hasSel: !!sel, sel: sel || { fields: [], history: [] },
+      close: () => self.setState({ sel: null }),
+      facOpts, catOpts, stOpts,
+      onSearch: (e) => self.setState({ q: e.target.value }),
+      onFac: (e) => self.setState({ fac: e.target.value }),
+      onCat: (e) => self.setState({ cat: e.target.value }),
+      onSt: (e) => self.setState({ st: e.target.value })
+    };
+  }
+}
+</script>
+</body>
+</html>

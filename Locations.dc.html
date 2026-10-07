@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CIRA Assets — Locations</title>
+<script src="./auth-guard.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div lang="{{lang}}" dir="{{dir}}" style="font-family: {{ff}}; color: #1f1c17; background: #ffffff; font-size: {{fs}}; line-height: {{lh}}; display: flex; flex-direction: column; gap: 24px">
+
+<section style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 600">{{t.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{t.subtitle}}</p>
+</div>
+<button type="button" class="btn2" style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-weight: 500; cursor: pointer; font-family: inherit">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+{{t.addRoom}}</button>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<!-- Facility list -->
+<nav aria-label="{{t.facilities}}" style="flex: 1 1 260px; display: flex; flex-direction: column; border: 1px solid #e4ddcf; border-radius: 12px; overflow: hidden">
+<div style="padding: 12px 16px; background: #f7f4ee; border-bottom: 1px solid #e4ddcf; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{t.facilitiesHead}}</div>
+<sc-for list="{{facs}}" as="f" hint-placeholder-count="4">
+<button type="button" onClick="{{f.pick}}" aria-current="{{f.current}}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 8px 16px; border: 0; border-bottom: 1px solid #e4ddcf; background: {{f.bg}}; box-shadow: {{f.shadow}}; cursor: pointer; text-align: start; font-family: inherit; color: #1f1c17">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{f.icon}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<span style="font-size: 15px; font-weight: 600; color: {{f.fg}}">{{f.name}}</span>
+<span style="font-size: 13px; line-height: 20px; color: #5f5a50">{{f.meta}}</span>
+</span>
+</button>
+</sc-for>
+<a href="#" style="padding: 12px 16px; font-size: 13px; font-weight: 500">{{t.showAll}}</a>
+</nav>
+
+<!-- Facility detail -->
+<section style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600">{{cur.long}}</h2>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{cur.address}}</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px">
+<sc-for list="{{cur.stats}}" as="s" hint-placeholder-count="4">
+<div style="border: 1px solid #e4ddcf; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{s.k}}</span>
+<span style="font-size: 28px; line-height: 32px; font-weight: 600; font-variant-numeric: tabular-nums">{{s.v}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="border: 1px solid #e4ddcf; border-radius: 12px; overflow: hidden">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 16px 12px">
+<h3 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.rooms}}</h3>
+<div role="group" aria-label="{{t.building}}" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{bldChips}}" as="b" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{b.pressed}}" onClick="{{b.pick}}" style="height: 36px; padding: 0 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; font-family: inherit; border: 1px solid {{b.bd}}; background: {{b.bg}}; color: {{b.fg}}">{{b.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 760px">
+<div style="display: grid; grid-template-columns: 120px minmax(180px, 2fr) minmax(140px, 1fr) 100px 140px 150px; background: #f7f4ee; border-top: 1px solid #e4ddcf; border-bottom: 1px solid #e4ddcf; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">
+<div style="padding: 12px 16px">{{t.colBuilding}}</div>
+<div style="padding: 12px 16px">{{t.colRoom}}</div>
+<div style="padding: 12px 16px">{{t.colType}}</div>
+<div style="padding: 12px 16px; text-align: end">{{t.colAssets}}</div>
+<div style="padding: 12px 16px">{{t.colAudited}}</div>
+<div style="padding: 12px 16px">{{t.colCustodian}}</div>
+</div>
+<sc-for list="{{rooms}}" as="r" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 120px minmax(180px, 2fr) minmax(140px, 1fr) 100px 140px 150px; align-items: center; min-height: 52px; border-bottom: 1px solid #e4ddcf; font-size: 13px; line-height: 20px">
+<div style="padding: 12px 16px; color: #5f5a50">{{r.b}}</div>
+<div style="padding: 12px 16px"><a href="#" style="font-weight: 600; text-decoration: none">{{r.name}}</a></div>
+<div style="padding: 12px 16px; color: #5f5a50">{{r.type}}</div>
+<div style="padding: 12px 16px; text-align: end; font-weight: 600; font-variant-numeric: tabular-nums">{{r.n}}</div>
+<div style="padding: 12px 16px; font-variant-numeric: tabular-nums">{{r.aud}}</div>
+<div style="padding: 12px 16px; color: #5f5a50">{{r.cust}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":1216,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { fac: 'BUC', bld: 'all' };
+  }
+  renderVals() {
+    const self = this;
+    const ar = (this.props.lang || 'en') === 'ar';
+    const L = (en, a) => (ar ? a : en);
+    const TYPE = { lec: L('Lecture hall', 'قاعة محاضرات'), cls: L('Classroom', 'فصل دراسي'), lab: L('Laboratory', 'معمل'), off: L('Office', 'مكتب'), srv: L('Server room', 'غرفة خوادم'), lib: L('Library', 'مكتبة'), yard: L('Outdoor', 'مساحة خارجية') };
+    const R = (b, name, type, n, aud, cust) => ({ b, name, type, n, aud, cust });
+    const NOT = L('Not yet', 'لم يتم بعد');
+    const FAC = [
+      { id: 'BUC', name: 'BUC', long: L('Badr University in Cairo (BUC)', 'جامعة بدر بالقاهرة (BUC)'), address: L('[Address — Badr City, Cairo]', '[العنوان — مدينة بدر، القاهرة]'), assets: 1470, last: L('28 Sep 2026', '28 سبتمبر 2026'),
+        rooms: [
+          R('A', L('Lecture Hall 3.12', 'قاعة المحاضرات 3.12'), 'lec', 214, L('28 Sep 2026', '28 سبتمبر 2026'), L('Facilities', 'المرافق')),
+          R('A', L('Room 1.08', 'غرفة 1.08'), 'cls', 24, L('06 Oct 2026', '06 أكتوبر 2026'), L('Facilities', 'المرافق')),
+          R('B', L('Biology Lab 2', 'معمل الأحياء 2'), 'lab', 132, L('28 Sep 2026', '28 سبتمبر 2026'), L('Dr. Hany Fouad', 'د. هاني فؤاد')),
+          R('B', L('Chemistry Lab 1', 'معمل الكيمياء 1'), 'lab', 158, NOT, L('Dr. Rana Adel', 'د. رنا عادل')),
+          R('C', L('Data centre', 'مركز البيانات'), 'srv', 96, L('20 Sep 2026', '20 سبتمبر 2026'), L('IT', 'تقنية المعلومات')),
+          R('C', L('Central library', 'المكتبة المركزية'), 'lib', 410, NOT, L('Library team', 'فريق المكتبة'))
+        ] },
+      { id: 'BUA', name: 'BUA', long: 'BUA', address: L('[Address]', '[العنوان]'), assets: 845, last: L('14 Sep 2026', '14 سبتمبر 2026'),
+        rooms: [
+          R('A', L('Pharmacy, Room 2.04', 'الصيدلة، غرفة 2.04'), 'off', 38, L('14 Sep 2026', '14 سبتمبر 2026'), L('Dr. Mona Saleh', 'د. منى صالح')),
+          R('A', L('Auditorium', 'المسرح'), 'lec', 120, L('14 Sep 2026', '14 سبتمبر 2026'), L('Events team', 'فريق الفعاليات')),
+          R('B', L('Anatomy Lab', 'معمل التشريح'), 'lab', 96, NOT, L('Faculty of Medicine', 'كلية الطب')),
+          R('Y', L('Transport yard', 'ساحة النقل'), 'yard', 14, L('01 Sep 2026', '01 سبتمبر 2026'), L('Ahmed Fathy', 'أحمد فتحي'))
+        ] },
+      { id: 'SEU', name: 'SEU', long: 'SEU', address: L('[Address]', '[العنوان]'), assets: 665, last: L('22 Sep 2026', '22 سبتمبر 2026'),
+        rooms: [
+          R('A', L('Hall A', 'القاعة A'), 'lec', 180, L('22 Sep 2026', '22 سبتمبر 2026'), L('Facilities', 'المرافق')),
+          R('A', L('Server room', 'غرفة الخوادم'), 'srv', 64, L('22 Sep 2026', '22 سبتمبر 2026'), L('IT', 'تقنية المعلومات')),
+          R('C', L('Library', 'المكتبة'), 'lib', 118, NOT, L('Library team', 'فريق المكتبة'))
+        ] },
+      { id: 'FNC', name: L('Futures Nasr City', 'فيوتشرز مدينة نصر'), long: L('Futures Nasr City', 'فيوتشرز مدينة نصر'), address: L('[Address — Nasr City, Cairo]', '[العنوان — مدينة نصر، القاهرة]'), assets: 1240, last: L('10 Sep 2026', '10 سبتمبر 2026'),
+        rooms: [
+          R('A', L('Science Lab B', 'معمل العلوم B'), 'lab', 214, L('10 Sep 2026', '10 سبتمبر 2026'), L('Facilities', 'المرافق')),
+          R('A', L('Room 2.11', 'غرفة 2.11'), 'cls', 31, L('10 Sep 2026', '10 سبتمبر 2026'), L('Grade 5 team', 'فريق الصف الخامس')),
+          R('B', L('Staff room', 'غرفة المعلمين'), 'off', 46, L('10 Sep 2026', '10 سبتمبر 2026'), L('Admin', 'الإدارة'))
+        ] }
+    ];
+    const cur = FAC.find((f) => f.id === this.state.fac) || FAC[0];
+    const blds = Array.from(new Set(cur.rooms.map((r) => r.b)));
+    const bld = blds.indexOf(this.state.bld) >= 0 ? this.state.bld : 'all';
+    const bName = (b) => (b === 'Y' ? L('Grounds', 'الساحات') : L('Building ', 'المبنى ') + b);
+    const facs = FAC.map((f) => {
+      const on = f.id === cur.id;
+      return { name: f.name, meta: f.assets.toLocaleString('en-US') + L(' assets · ', ' أصل · ') + f.rooms.length + L(' rooms listed', ' غرف مدرجة'),
+        current: on ? 'page' : 'false', bg: on ? '#f5e9ec' : '#ffffff', fg: on ? '#703845' : '#1f1c17', icon: on ? '#703845' : '#5f5a50',
+        shadow: on ? (ar ? 'inset -3px 0 0 #703845' : 'inset 3px 0 0 #703845') : 'none',
+        pick: () => self.setState({ fac: f.id, bld: 'all' }) };
+    });
+    const bldChips = ['all'].concat(blds).map((b) => {
+      const on = b === bld;
+      return { label: b === 'all' ? L('All buildings', 'كل المباني') : bName(b), pressed: on ? 'true' : 'false', bg: on ? '#f5e9ec' : '#ffffff', fg: on ? '#703845' : '#1f1c17', bd: on ? '#703845' : '#8f8676', pick: () => self.setState({ bld: b }) };
+    });
+    const rooms = cur.rooms.filter((r) => bld === 'all' || r.b === bld).map((r) => ({ b: bName(r.b), name: r.name, type: TYPE[r.type], n: r.n.toLocaleString('en-US'), aud: r.aud, cust: r.cust }));
+    return {
+      lang: ar ? 'ar' : 'en', dir: ar ? 'rtl' : 'ltr',
+      ff: ar ? '"IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif' : '"IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif',
+      fs: ar ? '16px' : '15px', lh: ar ? '26px' : '22px', lsp: ar ? '0' : '0.04em',
+      t: {
+        title: L('Locations', 'المواقع'),
+        subtitle: L('45 facilities · buildings and rooms where assets are kept', '45 منشأة · المباني والغرف التي توجد بها الأصول'),
+        addRoom: L('Add room', 'إضافة غرفة'),
+        facilities: L('Facilities', 'المنشآت'), facilitiesHead: L('FACILITIES', 'المنشآت'),
+        showAll: L('Show all 45 facilities', 'عرض كل المنشآت الـ45'),
+        rooms: L('Rooms', 'الغرف'), building: L('Building', 'المبنى'),
+        colBuilding: L('BUILDING', 'المبنى'), colRoom: L('ROOM', 'الغرفة'), colType: L('TYPE', 'النوع'),
+        colAssets: L('ASSETS', 'الأصول'), colAudited: L('LAST AUDITED', 'آخر جرد'), colCustodian: L('RESPONSIBLE', 'المسؤول')
+      },
+      facs, bldChips, rooms,
+      cur: { long: cur.long, address: cur.address, stats: [
+        { k: L('BUILDINGS', 'المباني'), v: String(blds.length) },
+        { k: L('ROOMS LISTED', 'الغرف المدرجة'), v: String(cur.rooms.length) },
+        { k: L('ASSETS', 'الأصول'), v: cur.assets.toLocaleString('en-US') },
+        { k: L('LAST AUDIT', 'آخر جرد'), v: cur.last }
+      ] }
+    };
+  }
+}
+</script>
+</body>
+</html>

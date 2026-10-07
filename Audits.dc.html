@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CIRA Assets — Audits</title>
+<script src="./auth-guard.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div lang="{{lang}}" dir="{{dir}}" style="font-family: {{ff}}; color: #1f1c17; background: #ffffff; font-size: {{fs}}; line-height: {{lh}}; display: flex; flex-direction: column; gap: 24px">
+
+<section style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 600">{{t.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{t.subtitle}}</p>
+</div>
+<button type="button" class="btn2" style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-weight: 500; cursor: pointer; font-family: inherit">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+{{t.newCycle}}</button>
+</section>
+
+<!-- Cycle progress -->
+<section style="position: relative; overflow: hidden; border: 1px solid #e4ddcf; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="position: absolute; left: 0; top: 0; right: 0; height: 4px; background: #ce9f51"></div>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.cycle}}</h2>
+<span style="font-size: 13px; color: #5f5a50">{{t.cycleDates}}</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px">
+<span style="font-size: 28px; line-height: 32px; font-weight: 600; font-variant-numeric: tabular-nums">77%</span>
+<span style="font-size: 13px; color: #5f5a50">{{t.cycleCount}}</span>
+</div>
+<div style="height: 12px; border-radius: 4px; background: #f7f4ee; overflow: hidden"><div style="width: 77%; height: 100%; border-radius: 4px; background: #ce9f51"></div></div>
+<div style="overflow-x: auto">
+<div style="min-width: 680px">
+<div style="display: grid; grid-template-columns: minmax(220px, 2fr) 120px 140px minmax(160px, 1.5fr) 140px; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50; border-bottom: 1px solid #e4ddcf">
+<div style="padding: 10px 8px">{{t.colFacility}}</div>
+<div style="padding: 10px 8px; text-align: end">{{t.colRooms}}</div>
+<div style="padding: 10px 8px; text-align: end">{{t.colAssets}}</div>
+<div style="padding: 10px 8px">{{t.colProgress}}</div>
+<div style="padding: 10px 8px">{{t.colLead}}</div>
+</div>
+<sc-for list="{{facs}}" as="f" hint-placeholder-count="4">
+<div style="display: grid; grid-template-columns: minmax(220px, 2fr) 120px 140px minmax(160px, 1.5fr) 140px; align-items: center; min-height: 52px; border-bottom: 1px solid #e4ddcf; font-size: 13px; line-height: 20px">
+<div style="padding: 8px; font-weight: 500">{{f.name}}</div>
+<div style="padding: 8px; text-align: end; font-variant-numeric: tabular-nums">{{f.rooms}}</div>
+<div style="padding: 8px; text-align: end; font-variant-numeric: tabular-nums">{{f.assets}}</div>
+<div style="padding: 8px; display: flex; align-items: center; gap: 8px">
+<div style="flex: 1; height: 8px; border-radius: 4px; background: #f7f4ee; overflow: hidden"><div style="height: 100%; border-radius: 4px; background: #ce9f51; width: {{f.pct}}"></div></div>
+<span style="width: 40px; text-align: end; font-weight: 600; font-variant-numeric: tabular-nums">{{f.pct}}</span>
+</div>
+<div style="padding: 8px; color: #5f5a50">{{f.lead}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<!-- Discrepancies -->
+<section style="flex: 999 1 560px; min-width: 0; border: 1px solid #e4ddcf; border-radius: 12px; overflow: hidden">
+<div style="padding: 20px 24px 0; display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.discTitle}}</h2>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{t.discHint}}</p>
+</div>
+<div role="tablist" aria-label="{{t.discTitle}}" style="display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 16px 0; border-bottom: 1px solid #e4ddcf">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="3">
+<button type="button" role="tab" aria-selected="{{tb.sel}}" onClick="{{tb.pick}}" style="height: 48px; padding: 0 12px; border: 0; background: transparent; cursor: pointer; font-size: 15px; font-family: inherit; font-weight: {{tb.weight}}; color: {{tb.fg}}; box-shadow: {{tb.shadow}}">{{tb.label}} <span style="font-size: 13px; color: #5f5a50">{{tb.count}}</span></button>
+</sc-for>
+</div>
+<ul style="margin: 0; padding: 0 24px; list-style: none">
+<sc-for list="{{items}}" as="it" hint-placeholder-count="3">
+<li style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #e4ddcf">
+<span style="flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column">
+<span style="font-size: 15px; font-weight: 500">{{it.name}}</span>
+<span style="font-size: 13px; line-height: 20px; color: #5f5a50"><span dir="ltr" style="font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-weight: 500; color: #1f1c17; white-space: nowrap">{{it.tag}}</span> · {{it.detail}}</span>
+</span>
+<sc-if value="{{it.done}}" hint-placeholder-val="{{false}}">
+<span style="font-size: 13px; font-weight: 600; color: #1d6b45">{{t.resolved}}</span>
+</sc-if>
+<sc-if value="{{it.open}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{it.resolve}}" class="btn2" style="height: 40px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit">{{it.action}}</button>
+</sc-if>
+</li>
+</sc-for>
+</ul>
+</section>
+
+<!-- Past cycles -->
+<section style="flex: 1 1 300px; min-width: 0; border: 1px solid #e4ddcf; border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.pastTitle}}</h2>
+<ul style="margin: 0; padding: 0; list-style: none">
+<sc-for list="{{past}}" as="p" hint-placeholder-count="3">
+<li style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid #e4ddcf; font-size: 13px; line-height: 20px">
+<span style="display: flex; flex-direction: column"><a href="#" style="font-weight: 600; text-decoration: none">{{p.name}}</a><span style="color: #5f5a50">{{p.closed}}</span></span>
+<span style="text-align: end; display: flex; flex-direction: column"><span style="font-weight: 600; font-variant-numeric: tabular-nums">{{p.found}}</span><span style="color: #5f5a50">{{p.foundLabel}}</span></span>
+</li>
+</sc-for>
+</ul>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":1216,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'missing', done: {} };
+  }
+  renderVals() {
+    const self = this;
+    const ar = (this.props.lang || 'en') === 'ar';
+    const L = (en, a) => (ar ? a : en);
+    const fmt = (n) => n.toLocaleString('en-US');
+    const facs = [
+      { name: L('Futures Nasr City', 'فيوتشرز مدينة نصر'), rooms: '48 / 48', d: 1240, t: 1240, lead: L('Nour Adel', 'نور عادل') },
+      { name: L('Badr University in Cairo (BUC)', 'جامعة بدر بالقاهرة (BUC)'), rooms: '61 / 74', d: 1205, t: 1470, lead: L('Karim Sami', 'كريم سامي') },
+      { name: 'BUA', rooms: '29 / 46', d: 540, t: 845, lead: L('Heba Mostafa', 'هبة مصطفى') },
+      { name: 'SEU', rooms: '15 / 38', d: 272, t: 665, lead: L('Tarek Aly', 'طارق علي') }
+    ].map((f) => ({ name: f.name, rooms: f.rooms, assets: fmt(f.d) + ' / ' + fmt(f.t), pct: Math.round((f.d / f.t) * 100) + '%', lead: f.lead }));
+    const I = (id, tab, name, tag, detail) => ({ id, tab, name, tag, detail });
+    const ALL = [
+      I('m1', 'missing', L('Epson EB-L630U projector', 'جهاز عرض Epson EB-L630U'), 'BUC-IT-004821', L('Expected in Lecture Hall 3.12 · last seen 28 Sep 2026', 'متوقع في قاعة المحاضرات 3.12 · آخر ظهور 28 سبتمبر 2026')),
+      I('m2', 'missing', L('Dell OptiPlex 7010 desktop', 'حاسوب مكتبي Dell OptiPlex 7010'), 'BUA-IT-009915', L('Expected in Library, Room 1.02 · last seen 02 May 2026', 'متوقع في المكتبة، غرفة 1.02 · آخر ظهور 02 مايو 2026')),
+      I('m3', 'missing', L('Digital balance, 0.01 g', 'ميزان رقمي 0.01 جم'), 'FNC-LAB-000388', L('Expected in Science Lab B · last seen 11 Jun 2026', 'متوقع في معمل العلوم B · آخر ظهور 11 يونيو 2026')),
+      I('w1', 'wrong', L('Olympus CX23 microscope', 'مجهر Olympus CX23'), 'BUC-LAB-001102', L('Registered to Biology Lab 2 · found in Room 1.08', 'مسجّل في معمل الأحياء 2 · وُجد في غرفة 1.08')),
+      I('w2', 'wrong', L('Student desk', 'مكتب طالب'), 'SEU-FUR-001877', L('Registered to Hall B · found in Hall A', 'مسجّل في القاعة B · وُجد في القاعة A')),
+      I('u1', 'unreg', L('Student desk, no label', 'مكتب طالب بدون ملصق'), 'BUC-FUR-007302', L('Label printed but never registered · Room 1.08', 'طُبع الملصق ولم يُسجَّل · غرفة 1.08'))
+    ];
+    const ACT = { missing: L('Mark as missing', 'تسجيل كمفقود'), wrong: L('Update location', 'تحديث الموقع'), unreg: L('Register asset', 'تسجيل الأصل') };
+    const TABS = [['missing', L('Not found', 'لم يُعثر عليها')], ['wrong', L('Wrong room', 'غرفة خاطئة')], ['unreg', L('Not registered', 'غير مسجَّلة')]];
+    const tabs = TABS.map(([id, label]) => {
+      const on = self.state.tab === id;
+      return { label, count: ALL.filter((x) => x.tab === id && !self.state.done[x.id]).length, sel: on ? 'true' : 'false', weight: on ? '600' : '400', fg: on ? '#703845' : '#5f5a50', shadow: on ? 'inset 0 -2px 0 #703845' : 'none', pick: () => self.setState({ tab: id }) };
+    });
+    const items = ALL.filter((x) => x.tab === self.state.tab).map((x) => {
+      const d = !!self.state.done[x.id];
+      return { name: x.name, tag: x.tag, detail: x.detail, done: d, open: !d, action: ACT[x.tab],
+        resolve: () => { const n = Object.assign({}, self.state.done); n[x.id] = true; self.setState({ done: n }); } };
+    });
+    return {
+      lang: ar ? 'ar' : 'en', dir: ar ? 'rtl' : 'ltr',
+      ff: ar ? '"IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif' : '"IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif',
+      fs: ar ? '16px' : '15px', lh: ar ? '26px' : '22px', lsp: ar ? '0' : '0.04em',
+      t: {
+        title: L('Audits', 'الجرد'),
+        subtitle: L('Room-by-room checks that every registered asset is where it should be', 'فحص كل غرفة للتأكد من وجود كل أصل مسجّل في مكانه'),
+        newCycle: L('Plan audit cycle', 'تخطيط دورة جرد'),
+        cycle: L('Q4 2026 audit cycle', 'دورة جرد الربع الرابع 2026'),
+        cycleDates: L('01 Oct – 15 Dec 2026 · 4 facilities in this cycle', '01 أكتوبر – 15 ديسمبر 2026 · 4 منشآت في هذه الدورة'),
+        cycleCount: L('3,257 of 4,220 assets scanned', 'تم مسح 3,257 من 4,220 أصلًا'),
+        colFacility: L('FACILITY', 'المنشأة'), colRooms: L('ROOMS DONE', 'الغرف المنجزة'), colAssets: L('ASSETS', 'الأصول'), colProgress: L('PROGRESS', 'التقدّم'), colLead: L('AUDIT LEAD', 'مسؤول الجرد'),
+        discTitle: L('Discrepancies', 'الفروقات'),
+        discHint: L('Resolve each one before the cycle closes', 'عالج كل فرق قبل إغلاق الدورة'),
+        resolved: L('Resolved', 'تمت المعالجة'),
+        pastTitle: L('Past cycles', 'الدورات السابقة')
+      },
+      facs, tabs, items,
+      past: [
+        { name: L('Q3 2026', 'الربع الثالث 2026'), closed: L('Closed 30 Sep 2026', 'أُغلقت 30 سبتمبر 2026'), found: '99.2%', foundLabel: L('found', 'تم العثور عليها') },
+        { name: L('Q2 2026', 'الربع الثاني 2026'), closed: L('Closed 30 Jun 2026', 'أُغلقت 30 يونيو 2026'), found: '98.7%', foundLabel: L('found', 'تم العثور عليها') },
+        { name: L('Q1 2026', 'الربع الأول 2026'), closed: L('Closed 31 Mar 2026', 'أُغلقت 31 مارس 2026'), found: '98.9%', foundLabel: L('found', 'تم العثور عليها') }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

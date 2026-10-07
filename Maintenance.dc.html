@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CIRA Assets — Maintenance</title>
+<script src="./auth-guard.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div lang="{{lang}}" dir="{{dir}}" style="font-family: {{ff}}; color: #1f1c17; background: #ffffff; font-size: {{fs}}; line-height: {{lh}}; display: flex; flex-direction: column; gap: 24px">
+
+<section style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 600">{{t.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: #5f5a50">{{t.subtitle}}</p>
+</div>
+<button type="button" class="btn2" style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-weight: 500; cursor: pointer; font-family: inherit">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+{{t.newWo}}</button>
+</section>
+
+<section aria-label="{{t.summary}}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+<div style="border: 1px solid #e4ddcf; border-radius: 12px; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">{{s.k}}</span>
+<span style="font-size: 28px; line-height: 32px; font-weight: 600; font-variant-numeric: tabular-nums">{{s.v}}</span>
+</div>
+</sc-for>
+</section>
+
+<!-- Board -->
+<section aria-label="{{t.board}}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; align-items: start">
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="4">
+<div style="border-radius: 12px; background: #f7f4ee; border: 1px solid #e4ddcf; padding: 12px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 4px 0">
+<h2 style="margin: 0; font-size: 15px; line-height: 22px; font-weight: 600">{{c.label}}</h2>
+<span style="min-width: 24px; height: 24px; padding: 0 6px; box-sizing: border-box; border-radius: 4px; background: #ffffff; border: 1px solid #e4ddcf; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums">{{c.count}}</span>
+</div>
+<sc-for list="{{c.cards}}" as="w" hint-placeholder-count="2">
+<article style="background: #ffffff; border: 1px solid #e4ddcf; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+<span dir="ltr" style="font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-size: 12px; font-weight: 500; color: #5f5a50">{{w.id}}</span>
+<span style="height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; background: {{w.pBg}}; color: {{w.pFg}}">{{w.priority}}</span>
+</div>
+<h3 style="margin: 0; font-size: 15px; line-height: 22px; font-weight: 600">{{w.title}}</h3>
+<div style="font-size: 13px; line-height: 20px; color: #5f5a50"><span dir="ltr" style="font-family: &quot;IBM Plex Mono&quot;, ui-monospace, monospace; font-weight: 500; color: #1f1c17; white-space: nowrap">{{w.tag}}</span> · {{w.loc}}</div>
+<div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; line-height: 20px">
+<span>{{w.who}}</span>
+<span style="color: #5f5a50; font-variant-numeric: tabular-nums">{{w.due}}</span>
+</div>
+<sc-if value="{{w.canMove}}" hint-placeholder-val="{{true}}">
+<button type="button" onClick="{{w.move}}" class="btn2" style="height: 36px; padding: 0 12px; border: 1px solid #8f8676; border-radius: 8px; background: #ffffff; color: #1f1c17; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit">{{w.moveLabel}}</button>
+</sc-if>
+</article>
+</sc-for>
+</div>
+</sc-for>
+</section>
+
+<!-- Preventive schedule -->
+<section style="border: 1px solid #e4ddcf; border-radius: 12px; overflow: hidden">
+<div style="padding: 20px 24px 12px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline">
+<h2 style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600">{{t.pmTitle}}</h2>
+<span style="font-size: 13px; color: #5f5a50">{{t.pmHint}}</span>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 760px">
+<div style="display: grid; grid-template-columns: minmax(220px, 2fr) minmax(180px, 1.5fr) 140px 130px 160px; background: #f7f4ee; border-top: 1px solid #e4ddcf; border-bottom: 1px solid #e4ddcf; font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: {{lsp}}; color: #5f5a50">
+<div style="padding: 12px 16px">{{t.colTask}}</div>
+<div style="padding: 12px 16px">{{t.colWhere}}</div>
+<div style="padding: 12px 16px">{{t.colEvery}}</div>
+<div style="padding: 12px 16px">{{t.colNext}}</div>
+<div style="padding: 12px 16px">{{t.colVendor}}</div>
+</div>
+<sc-for list="{{pm}}" as="p" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: minmax(220px, 2fr) minmax(180px, 1.5fr) 140px 130px 160px; align-items: center; min-height: 52px; border-bottom: 1px solid #e4ddcf; font-size: 13px; line-height: 20px">
+<div style="padding: 12px 16px; font-weight: 500">{{p.task}}</div>
+<div style="padding: 12px 16px">{{p.where}}</div>
+<div style="padding: 12px 16px; color: #5f5a50">{{p.every}}</div>
+<div style="padding: 12px 16px; font-variant-numeric: tabular-nums">{{p.next}}</div>
+<div style="padding: 12px 16px; color: #5f5a50">{{p.vendor}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"lang":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":1216,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { stage: {} };
+  }
+  renderVals() {
+    const self = this;
+    const ar = (this.props.lang || 'en') === 'ar';
+    const L = (en, a) => (ar ? a : en);
+    const D = (d, m) => d + ' ' + (ar ? ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'] : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'])[m - 1];
+    const PRI = [
+      { label: L('High', 'عالية'), bg: '#f6ecda', fg: '#7d5a1c' },
+      { label: L('Medium', 'متوسطة'), bg: '#eeebe5', fg: '#1f1c17' },
+      { label: L('Low', 'منخفضة'), bg: '#ffffff', fg: '#5f5a50' }
+    ];
+    const STAGES = [L('Open', 'مفتوح'), L('In progress', 'قيد التنفيذ'), L('Waiting for parts', 'بانتظار قطع الغيار'), L('Done', 'منجز')];
+    const W = [
+      { id: 'WO-2026-0418', s: 0, p: 0, title: L('Projector not powering on', 'جهاز العرض لا يعمل'), tag: 'BUC-AV-000641', loc: L('BUC · Hall 2.05', 'BUC · القاعة 2.05'), who: L('Unassigned', 'غير مُسنَد'), due: D('08', 10) },
+      { id: 'WO-2026-0421', s: 0, p: 1, title: L('Broken chair arms (x6)', 'أذرع كراسي مكسورة (6)'), tag: 'SEU-FUR-002318', loc: L('SEU · Hall A', 'SEU · القاعة A'), who: L('Unassigned', 'غير مُسنَد'), due: D('12', 10) },
+      { id: 'WO-2026-0397', s: 1, p: 0, title: L('Fume hood airflow below spec', 'تدفق هواء خزانة الأبخرة أقل من المواصفات'), tag: 'FNC-LAB-000412', loc: L('Futures Nasr City · Science Lab B', 'فيوتشرز مدينة نصر · معمل العلوم B'), who: L('LabTech Egypt', 'LabTech Egypt'), due: D('07', 10) },
+      { id: 'WO-2026-0402', s: 1, p: 1, title: L('AC servicing, lecture halls', 'صيانة تكييف قاعات المحاضرات'), tag: 'BUC-HVAC-000120', loc: L('BUC · Building A', 'BUC · المبنى A'), who: L('Facilities', 'المرافق'), due: D('15', 10) },
+      { id: 'WO-2026-0389', s: 2, p: 0, title: L('Switch power supply failed', 'تعطل مزود طاقة المحوّل'), tag: 'SEU-IT-003560', loc: L('SEU · Server room', 'SEU · غرفة الخوادم'), who: L('IT', 'تقنية المعلومات'), due: D('10', 10) },
+      { id: 'WO-2026-0371', s: 3, p: 2, title: L('Replace printer fuser', 'استبدال وحدة التسخين بالطابعة'), tag: 'FNC-IT-000877', loc: L('Futures Nasr City · Staff room', 'فيوتشرز مدينة نصر · غرفة المعلمين'), who: L('IT', 'تقنية المعلومات'), due: D('02', 10) }
+    ];
+    const stageOf = (w) => (self.state.stage[w.id] !== undefined ? self.state.stage[w.id] : w.s);
+    const cols = STAGES.map((label, si) => {
+      const cards = W.filter((w) => stageOf(w) === si).map((w) => ({
+        id: w.id, title: w.title, tag: w.tag, loc: w.loc, who: w.who, due: L('Due ', 'الاستحقاق ') + w.due,
+        priority: PRI[w.p].label, pBg: PRI[w.p].bg, pFg: PRI[w.p].fg,
+        canMove: si < 3,
+        moveLabel: si < 3 ? L('Move to: ', 'نقل إلى: ') + STAGES[si + 1] : '',
+        move: () => { const n = Object.assign({}, self.state.stage); n[w.id] = si + 1; self.setState({ stage: n }); }
+      }));
+      return { label, count: cards.length, cards };
+    });
+    const P = (task, where, every, next, vendor) => ({ task, where, every, next, vendor });
+    const pm = [
+      P(L('Generator load test', 'اختبار حمل المولد'), L('BUC · Power house', 'BUC · غرفة الطاقة'), L('Monthly', 'شهريًا'), D('12', 10) + ' 2026', L('Facilities', 'المرافق')),
+      P(L('Fire extinguisher inspection', 'فحص طفايات الحريق'), L('All facilities', 'كل المنشآت'), L('Quarterly', 'ربع سنوي'), D('01', 11) + ' 2026', L('[Vendor]', '[المورد]')),
+      P(L('Fume hood certification', 'اعتماد خزانات الأبخرة'), L('Futures Nasr City · labs', 'فيوتشرز مدينة نصر · المعامل'), L('Yearly', 'سنويًا'), D('15', 11) + ' 2026', 'LabTech Egypt'),
+      P(L('Bus safety check', 'فحص سلامة الحافلات'), L('BUA · Transport yard', 'BUA · ساحة النقل'), L('Every 3 months', 'كل 3 أشهر'), D('20', 10) + ' 2026', 'MCV'),
+      P(L('UPS battery test', 'اختبار بطاريات UPS'), L('SEU · Server room', 'SEU · غرفة الخوادم'), L('Every 6 months', 'كل 6 أشهر'), D('03', 12) + ' 2026', L('IT', 'تقنية المعلومات'))
+    ];
+    return {
+      lang: ar ? 'ar' : 'en', dir: ar ? 'rtl' : 'ltr',
+      ff: ar ? '"IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif' : '"IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif',
+      fs: ar ? '16px' : '15px', lh: ar ? '26px' : '22px', lsp: ar ? '0' : '0.04em',
+      t: {
+        title: L('Maintenance', 'الصيانة'),
+        subtitle: L('Work orders and scheduled servicing across all facilities', 'أوامر العمل والصيانة الدورية في كل المنشآت'),
+        newWo: L('New work order', 'أمر عمل جديد'),
+        summary: L('Summary', 'ملخّص'), board: L('Work orders by stage', 'أوامر العمل حسب المرحلة'),
+        pmTitle: L('Preventive maintenance', 'الصيانة الوقائية'),
+        pmHint: L('Next 60 days', 'الـ60 يومًا القادمة'),
+        colTask: L('TASK', 'المهمة'), colWhere: L('WHERE', 'المكان'), colEvery: L('REPEATS', 'التكرار'), colNext: L('NEXT', 'الموعد القادم'), colVendor: L('DONE BY', 'المنفّذ')
+      },
+      stats: [
+        { k: L('OPEN WORK ORDERS', 'أوامر عمل مفتوحة'), v: '41' },
+        { k: L('UNDER MAINTENANCE', 'تحت الصيانة'), v: '486' },
+        { k: L('AVERAGE REPAIR TIME', 'متوسط مدة الإصلاح'), v: L('6 days', '6 أيام') },
+        { k: L('SPEND, SEP 2026', 'الإنفاق، سبتمبر 2026'), v: L('EGP 3,084,000', 'ج.م 3,084,000') }
+      ],
+      cols, pm
+    };
+  }
+}
+</script>
+</body>
+</html>
